@@ -14,14 +14,7 @@ interface RemovedMessageProps {
 export function RemovedMessage({ song, onUndo, onDone }: RemovedMessageProps) {
   return (
     <div role="status" aria-label="Removed song">
-      {song !== null && (
-        <RemovedNotice
-          key={song.id}
-          song={song}
-          onUndo={onUndo}
-          onDone={onDone}
-        />
-      )}
+      {song !== null && <RemovedNotice key={song.id} song={song} onUndo={onUndo} onDone={onDone} />}
     </div>
   );
 }

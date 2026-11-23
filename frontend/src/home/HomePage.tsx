@@ -50,11 +50,7 @@ export function HomePage(props: HomePageProps) {
         </p>
         {guest && (
           <p className="home-hint">
-            <a
-              href={ACCOUNT_PATH}
-              className="home-sign-in"
-              onClick={followLink(ACCOUNT_PATH)}
-            >
+            <a href={ACCOUNT_PATH} className="home-sign-in" onClick={followLink(ACCOUNT_PATH)}>
               Sign in
             </a>{" "}
             to save songs.
@@ -80,10 +76,7 @@ export function HomePage(props: HomePageProps) {
 
 function mostRecent(songs: SavedSong[]): SavedSong | null {
   return songs.reduce<SavedSong | null>(
-    (latest, song) =>
-      latest === null || song.lastOpenedAt > latest.lastOpenedAt
-        ? song
-        : latest,
+    (latest, song) => (latest === null || song.lastOpenedAt > latest.lastOpenedAt ? song : latest),
     null,
   );
 }
@@ -132,11 +125,7 @@ function ContinueCard({ song, savedCount, onOpen }: ContinueCardProps) {
             <span className="continue-action">Continue</span>
           </span>
         </button>
-        <a
-          href={LIBRARY_PATH}
-          className="text-link"
-          onClick={followLink(LIBRARY_PATH)}
-        >
+        <a href={LIBRARY_PATH} className="text-link" onClick={followLink(LIBRARY_PATH)}>
           All your songs ({savedCount})
         </a>
       </div>
@@ -185,8 +174,8 @@ function HomeFooter() {
     <footer className="home-footer">
       <div>
         <p>
-          Lyrics from <a href={LRCLIB_URL}>LRCLIB</a>. Hiragana, romaji, and
-          English by Groq and Gemini.
+          Lyrics from <a href={LRCLIB_URL}>LRCLIB</a>. Hiragana, romaji, and English by Groq and
+          Gemini.
         </p>
         <p>
           Built by Victor Velma. <a href={SOURCE_CODE_URL}>Source on GitHub</a>

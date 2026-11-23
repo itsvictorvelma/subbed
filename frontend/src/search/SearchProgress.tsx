@@ -80,8 +80,7 @@ export function SearchProgress({ stage }: { stage: Stage }) {
 
 // "[ OK ]", a spinning "[ ⠹ ]", or "[ -- ]"; decorative, since the step says its state in words.
 function StepMark({ state }: { state: Step["state"] }) {
-  const inside =
-    state === "done" ? "OK" : state === "active" ? <Spinner /> : "--";
+  const inside = state === "done" ? "OK" : state === "active" ? <Spinner /> : "--";
   return (
     <span className="step-mark" aria-hidden="true">
       [ {inside} ]

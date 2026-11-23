@@ -1,6 +1,16 @@
-// Checks rules in styles.css that jsdom cannot compute, by reading the stylesheet as text.
+// Checks rules in the stylesheet that jsdom cannot compute, by reading it as text: every partial,
+// in the order styles/index.css imports them.
 import { expect, test } from "vitest";
-import css from "./styles.css?raw";
+import index from "./styles/index.css?raw";
+
+const partials: Record<string, string> = import.meta.glob("./styles/*.css", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const css = [...index.matchAll(/@import "\.\/(.+?)";/g)]
+  .map((match) => partials[`./styles/${match[1] ?? ""}`] ?? "")
+  .join("\n");
 
 const TEXT_PAIRS: [text: string, background: string][] = [
   ["--text", "--bg"],
@@ -20,7 +30,7 @@ const TEXT_PAIRS: [text: string, background: string][] = [
 function tokens(opening: string): Map<string, string> {
   const start = css.indexOf(opening);
   if (start === -1) {
-    throw new Error(`styles.css has no "${opening}" block`);
+    throw new Error(`the stylesheet has no "${opening}" block`);
   }
   const block = css.slice(start, css.indexOf("}", start));
   const found = new Map<string, string>();
@@ -95,12 +105,8 @@ function ruleBody(selector: string): string {
 
 test("spec 018 AC-4: no dimmed rows, romaji bright and English quiet", () => {
   expect(css).not.toContain("is-playing");
-  expect(ruleBody(".versions-table td.col-romaji")).toContain(
-    "color: var(--text)",
-  );
-  expect(ruleBody(".versions-table .col-english")).toContain(
-    "color: var(--dim)",
-  );
+  expect(ruleBody(".versions-table td.col-romaji")).toContain("color: var(--text)");
+  expect(ruleBody(".versions-table .col-english")).toContain("color: var(--dim)");
 });
 
 test("spec 018 AC-6: tighter rows, narrower width, new sizes, and a verse divider", () => {
@@ -116,10 +122,7 @@ test("spec 018 AC-6: tighter rows, narrower width, new sizes, and a verse divide
     [".versions-table .col-hiragana", "font-size: 1.0625rem"],
     [".versions-table .col-romaji", "font-size: 1rem"],
     [".versions-table .col-english", "font-size: 0.9375rem"],
-    [
-      ".versions-table tbody + tbody tr:first-child td",
-      "border-top: 1px solid var(--line)",
-    ],
+    [".versions-table tbody + tbody tr:first-child td", "border-top: 1px solid var(--line)"],
     [".is-focus .versions-table", "max-width: 81rem"],
     [".is-focus .versions-table td", "--row-pad: 0.75rem"],
     [".is-focus .versions-table td", "--line-box: 2.125rem"],
@@ -138,9 +141,7 @@ test("spec 026 AC-5: one line box for every column, baseline-aligned, with no --
   expect(cell).toContain("line-height: var(--line-box)");
   expect(cell).toContain("vertical-align: baseline");
   expect(css).not.toContain("--shift");
-  expect(ruleBody(".versions-table .col-original")).not.toContain(
-    "line-height",
-  );
+  expect(ruleBody(".versions-table .col-original")).not.toContain("line-height");
   expect(ruleBody(".seek-button")).toContain("display: inline-flex");
   // Phones keep the same line box: their block sets no line height of its own on cells.
   const phone = css.slice(css.indexOf("@media (max-width: 719px)"));
@@ -161,9 +162,7 @@ test("spec 026 AC-7: the sung row is lit pink with a glow, strongest on the orig
   expect(ruleBody(".versions-table tr.current td.col-original")).toContain(
     "text-shadow: 0 0 18px var(--accent-glow)",
   );
-  expect(css).not.toMatch(
-    /tr\.current[^{]*\{[^}]*(background|box-shadow|border-radius)/,
-  );
+  expect(css).not.toMatch(/tr\.current[^{]*\{[^}]*(background|box-shadow|border-radius)/);
 });
 
 test("AC-11: below 720px only the chosen column shows next to the original", () => {
@@ -206,16 +205,12 @@ test("spec 029 AC-6: phone-only elements are hidden everywhere outside the phone
   const outside = css.slice(0, phone.start) + css.slice(phone.end);
   // Outside the phone block, only the hiding rule names phone-only, and it is the last rule.
   expect(outside.match(/\.phone-only/g)).toHaveLength(1);
-  expect(css.trimEnd().endsWith(".phone-only {\n  display: none;\n}")).toBe(
-    true,
-  );
+  expect(css.trimEnd().endsWith(".phone-only {\n  display: none;\n}")).toBe(true);
 
   // Every phone-only element is marked in a plain className string, so its classes can be read.
   const partners = new Set<string>();
   for (const source of Object.values(SOURCES)) {
-    const literals = [
-      ...source.matchAll(/className="([^"]*\bphone-only\b[^"]*)"/g),
-    ];
+    const literals = [...source.matchAll(/className="([^"]*\bphone-only\b[^"]*)"/g)];
     expect(source.split("phone-only").length - 1).toBe(literals.length);
     for (const match of literals) {
       for (const name of (match[1] ?? "").split(" ")) {

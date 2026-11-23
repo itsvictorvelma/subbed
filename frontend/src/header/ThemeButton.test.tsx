@@ -27,9 +27,7 @@ test("AC-7: with nothing stored, the system setting decides and nothing is force
   systemPrefersLight(true);
   render(<ThemeButton />);
 
-  expect(
-    screen.getByRole("button", { name: "Switch to dark mode" }),
-  ).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Switch to dark mode" })).toBeTruthy();
   expect(document.documentElement.dataset.theme).toBeUndefined();
 });
 
@@ -38,17 +36,13 @@ test("AC-7: the button switches the theme and the choice survives a reload", asy
   const user = userEvent.setup();
   const { unmount } = render(<ThemeButton />);
 
-  await user.click(
-    screen.getByRole("button", { name: "Switch to light mode" }),
-  );
+  await user.click(screen.getByRole("button", { name: "Switch to light mode" }));
   expect(document.documentElement.dataset.theme).toBe("light");
   expect(window.localStorage.getItem("subbed-theme")).toBe("light");
   unmount();
 
   render(<ThemeButton />);
-  expect(
-    screen.getByRole("button", { name: "Switch to dark mode" }),
-  ).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Switch to dark mode" })).toBeTruthy();
   expect(document.documentElement.dataset.theme).toBe("light");
 });
 
@@ -59,8 +53,6 @@ test("AC-7: blocked storage falls back to the system setting", () => {
   });
   render(<ThemeButton />);
 
-  expect(
-    screen.getByRole("button", { name: "Switch to light mode" }),
-  ).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Switch to light mode" })).toBeTruthy();
   vi.restoreAllMocks();
 });

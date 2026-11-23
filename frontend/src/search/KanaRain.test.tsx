@@ -87,9 +87,7 @@ test("spec 017 AC-1: the loading screen shows the decorative rain and no placeho
 test("spec 017 AC-2: the status line still says the step", () => {
   render(<SearchProgress stage="opening-found" />);
 
-  expect(screen.getByRole("status").textContent).toContain(
-    "Getting the lyrics and translating…",
-  );
+  expect(screen.getByRole("status").textContent).toContain("Getting the lyrics and translating…");
 });
 
 test("spec 017 AC-3: the rain falls while loading and asks for no frame once the page closes", () => {
@@ -163,9 +161,7 @@ test("spec 017 AC-7: the terminal card shows text marks that screen readers skip
     vi.advanceTimersByTime(1000);
   });
 
-  expect(container.querySelector(".terminal-bar")?.textContent).toContain(
-    "subbed@字幕",
-  );
+  expect(container.querySelector(".terminal-bar")?.textContent).toContain("subbed@字幕");
   expect(marks[0]?.textContent).toBe("[ OK ]");
   expect(marks[1]?.textContent).toBe(spinnerBefore);
   for (const decorative of container.querySelectorAll(

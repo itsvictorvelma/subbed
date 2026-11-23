@@ -82,10 +82,7 @@ export function useShortcuts(
 ): void {
   const handleKey = useEffectEvent((event: KeyboardEvent) => {
     const shortcut = shortcutFor(event);
-    if (
-      shortcut !== null &&
-      (only === undefined || only.includes(shortcut.kind))
-    ) {
+    if (shortcut !== null && (only === undefined || only.includes(shortcut.kind))) {
       event.preventDefault();
       onShortcut(shortcut);
     }

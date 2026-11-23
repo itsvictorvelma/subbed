@@ -17,7 +17,7 @@ function systemTheme(): Theme {
   return matchesMedia("(prefers-color-scheme: light)") ? "light" : "dark";
 }
 
-// Sets the theme on <html>, where styles.css reads it; null leaves it to the system.
+// Sets the theme on <html>, where styles/tokens.css reads it; null leaves it to the system.
 function applyTheme(theme: Theme | null): void {
   if (theme === null) {
     delete document.documentElement.dataset.theme;
@@ -44,9 +44,7 @@ export function ThemeButton() {
     <button
       type="button"
       className="icon-button"
-      aria-label={
-        shown === "dark" ? "Switch to light mode" : "Switch to dark mode"
-      }
+      aria-label={shown === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       onClick={toggle}
     >
       {shown === "dark" ? <SunIcon /> : <MoonIcon />}

@@ -1,0 +1,45 @@
+/* Motion */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

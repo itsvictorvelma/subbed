@@ -9,8 +9,7 @@ import { filterSongs, sortSongs } from "./songTiles";
 import type { SortOrder } from "./songTiles";
 
 export const EMPTY_LIBRARY_TEXT = "Your songs will show up here.";
-export const EMPTY_LIBRARY_HINT =
-  "Type a song you love in the search box: title, artist, or both.";
+export const EMPTY_LIBRARY_HINT = "Type a song you love in the search box: title, artist, or both.";
 const GUEST_LIBRARY_TEXT = "Sign in to keep your songs here.";
 
 // The filter box shows once there are more songs than fit in a glance.
@@ -58,10 +57,7 @@ function SavedSongs({ songs, onOpen, onRemove }: LibraryPageProps) {
 
   // The filter applies only while its box shows, so hidden text never hides songs.
   const filterShown = songs.length > FILTER_SHOWN_ABOVE;
-  const shown = sortSongs(
-    filterShown ? filterSongs(songs, filter) : songs,
-    order,
-  );
+  const shown = sortSongs(filterShown ? filterSongs(songs, filter) : songs, order);
 
   if (songs.length === 0) {
     return (
@@ -78,8 +74,8 @@ function SavedSongs({ songs, onOpen, onRemove }: LibraryPageProps) {
         <div>
           <h1 id="library-heading">Your songs</h1>
           <p className="dim">
-            {songs.length === 1 ? "1 saved" : `${String(songs.length)} saved`}.
-            Pick one to keep learning.
+            {songs.length === 1 ? "1 saved" : `${String(songs.length)} saved`}. Pick one to keep
+            learning.
           </p>
         </div>
         <div className="segmented" role="group" aria-label="Sort songs">
@@ -114,18 +110,10 @@ function SavedSongs({ songs, onOpen, onRemove }: LibraryPageProps) {
           />
         </div>
       )}
-      {shown.length === 0 && (
-        <p className="dim">No songs match "{filter.trim()}".</p>
-      )}
+      {shown.length === 0 && <p className="dim">No songs match "{filter.trim()}".</p>}
       <ul className="tile-grid">
         {shown.map((song) => (
-          <SongTile
-            key={song.id}
-            song={song}
-            nowMs={nowMs}
-            onOpen={onOpen}
-            onRemove={onRemove}
-          />
+          <SongTile key={song.id} song={song} nowMs={nowMs} onOpen={onOpen} onRemove={onRemove} />
         ))}
       </ul>
     </section>

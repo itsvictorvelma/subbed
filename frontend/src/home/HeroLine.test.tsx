@@ -16,9 +16,7 @@ function partStates(container: HTMLElement): (string | null)[] {
 }
 
 function englishShown(container: HTMLElement): string | null {
-  return (
-    container.querySelector(".hero-english")?.getAttribute("data-shown") ?? null
-  );
+  return container.querySelector(".hero-english")?.getAttribute("data-shown") ?? null;
 }
 
 function advanceTicks(count: number) {
@@ -47,27 +45,12 @@ test("spec 021 AC-3: with reduced motion the whole line shows at once, labelled 
 test("spec 021 AC-4: the parts are sung one by one, and the line rests after three loops", () => {
   vi.useFakeTimers();
   const { container } = render(<HeroLine />);
-  expect(partStates(container)).toEqual([
-    "waiting",
-    "waiting",
-    "waiting",
-    "waiting",
-  ]);
+  expect(partStates(container)).toEqual(["waiting", "waiting", "waiting", "waiting"]);
 
   advanceTicks(1);
-  expect(partStates(container)).toEqual([
-    "current",
-    "waiting",
-    "waiting",
-    "waiting",
-  ]);
+  expect(partStates(container)).toEqual(["current", "waiting", "waiting", "waiting"]);
   advanceTicks(1);
-  expect(partStates(container)).toEqual([
-    "sung",
-    "current",
-    "waiting",
-    "waiting",
-  ]);
+  expect(partStates(container)).toEqual(["sung", "current", "waiting", "waiting"]);
   expect(englishShown(container)).toBe("false");
   advanceTicks(3);
   expect(englishShown(container)).toBe("true");

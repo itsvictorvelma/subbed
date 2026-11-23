@@ -17,12 +17,7 @@ interface HeaderProps {
   currentPage: Route["page"];
 }
 
-export function Header({
-  busy,
-  onSearch,
-  showSearch,
-  currentPage,
-}: HeaderProps) {
+export function Header({ busy, onSearch, showSearch, currentPage }: HeaderProps) {
   const { username, checked } = useAccount();
   // Phone only: the header search box shows once its icon is pressed.
   const [searchOpen, setSearchOpen] = useState(false);

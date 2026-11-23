@@ -74,11 +74,7 @@ interface YouTubePlayerProps {
   onLoadError: () => void;
 }
 
-export function YouTubePlayer({
-  videoId,
-  onClock,
-  onLoadError,
-}: YouTubePlayerProps) {
+export function YouTubePlayer({ videoId, onClock, onLoadError }: YouTubePlayerProps) {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -127,9 +123,7 @@ export function YouTubePlayer({
 
 // The player's methods exist only once it is ready, so each one is checked before use. A volume
 // or speed set before then is kept and applied by `applySettings` from the player's onReady.
-function clockFor(
-  player: YouTubePlayerHandle,
-): AudioClock & { applySettings: () => void } {
+function clockFor(player: YouTubePlayerHandle): AudioClock & { applySettings: () => void } {
   let volume: number | null = null;
   let rate: number | null = null;
   const applySettings = () => {
@@ -150,10 +144,7 @@ function clockFor(
       rate = next;
       applySettings();
     },
-    timeMs: () =>
-      player.getCurrentTime === undefined
-        ? null
-        : player.getCurrentTime() * 1000,
+    timeMs: () => (player.getCurrentTime === undefined ? null : player.getCurrentTime() * 1000),
     durationMs: () => {
       const seconds = player.getDuration?.() ?? 0;
       return seconds > 0 ? seconds * 1000 : null;

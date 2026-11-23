@@ -103,9 +103,7 @@ function SignInForm({ onSignedIn }: { onSignedIn: (name: string) => void }) {
         <input
           id="account-password"
           type="password"
-          autoComplete={
-            mode === "sign-in" ? "current-password" : "new-password"
-          }
+          autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
           required
           maxLength={PASSWORD_MAX_CHARACTERS}
           value={password}
@@ -113,9 +111,7 @@ function SignInForm({ onSignedIn }: { onSignedIn: (name: string) => void }) {
             setPassword(event.target.value);
           }}
         />
-        {mode === "sign-up" && (
-          <p className="dim account-rules">{RULES_TEXT}</p>
-        )}
+        {mode === "sign-up" && <p className="dim account-rules">{RULES_TEXT}</p>}
         {error !== null && (
           <p role="alert" className="error">
             {error}

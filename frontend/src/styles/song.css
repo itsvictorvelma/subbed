@@ -1,0 +1,405 @@
+/* Song page */
+
+.song-page {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  animation: fade-up 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.song-head,
+.focus-strip {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0.75rem max(2rem, env(safe-area-inset-right)) 0.5rem max(2rem, env(safe-area-inset-left));
+}
+
+.song-title-block {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.song-title-block h1 {
+  font-size: 1.875rem;
+  letter-spacing: -0.01em;
+}
+
+.song-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+}
+
+.synced {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.focus-title {
+  font-weight: 600;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.other-matches {
+  position: relative;
+}
+
+.other-matches summary {
+  list-style: none;
+}
+
+.other-matches summary::-webkit-details-marker {
+  display: none;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 10;
+  width: min(22rem, 80vw);
+  margin: 0;
+  padding: 0.5rem;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  animation: fade-up 0.2s ease both;
+}
+
+.match-button {
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  font-size: 0.875rem;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 10px;
+}
+
+.match-button:hover {
+  background: var(--surface-2);
+}
+
+/* The lyrics and the "Back to the current line" button, which floats over their bottom edge. */
+.lyrics-area {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.back-to-line {
+  position: absolute;
+  z-index: 2;
+  bottom: 1.5rem;
+  left: 50%;
+  border-color: var(--accent);
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+  transform: translateX(-50%);
+}
+
+/* The lyrics: the only part of the song page that scrolls; room at the bottom clears the video. */
+.lyrics-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 1rem max(2rem, env(safe-area-inset-right)) 14rem max(2rem, env(safe-area-inset-left));
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 2rem,
+    #000 calc(100% - 4rem),
+    transparent 100%
+  );
+}
+
+.versions-table {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  table-layout: fixed;
+  border-spacing: 0;
+}
+
+/* "Lyrics from LRCLIB" under the last line, as quiet as the table headings. */
+.song-credit {
+  max-width: 72rem;
+  margin: 1.5rem auto 0;
+  padding: 0 1.25rem;
+  font-size: 0.8125rem;
+}
+
+.song-credit a,
+.home-sign-in {
+  color: var(--text);
+}
+
+.versions-table th {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* One line rhythm (spec 026): every column shares one line box, and cells align on their first
+   baseline, so wrapped lines sit side by side across the columns. */
+.versions-table td {
+  --row-pad: 0.5rem;
+  --line-box: 1.625rem;
+
+  padding: var(--row-pad) 1.25rem;
+  line-height: var(--line-box);
+  vertical-align: baseline;
+  transition:
+    color 0.35s,
+    text-shadow 0.35s;
+}
+
+.versions-table .col-original {
+  position: relative;
+  width: 27%;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.versions-table .col-hiragana {
+  width: 26%;
+  font-size: 1.0625rem;
+}
+
+.versions-table .col-romaji {
+  width: 25%;
+  font-size: 1rem;
+}
+
+.versions-table .col-english {
+  width: 22%;
+  font-size: 0.9375rem;
+  color: var(--dim);
+}
+
+/* Romaji is the pronunciation, so it keeps the main text colour; only English is quieter. */
+.versions-table td.col-romaji {
+  color: var(--text);
+}
+
+.versions-table th.col-original,
+.versions-table th.col-hiragana,
+.versions-table th.col-romaji,
+.versions-table th.col-english {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* A verse gap: a thin divider with a little space, instead of an empty band. */
+.versions-table tbody + tbody tr:first-child td {
+  padding-top: calc(var(--row-pad) + 0.75rem);
+  border-top: 1px solid var(--line);
+}
+
+/* The next line to be sung: a small dot at its left edge (decorative; the sung line has the bar). */
+.versions-table tr.next .col-original::before {
+  position: absolute;
+  top: 50%;
+  left: 0.375rem;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  background: var(--accent);
+  border-radius: 50%;
+  content: "";
+}
+
+/* The line being sung is lit like the home page's hero line (spec 026): every column turns pink
+   with a soft glow, strongest on the original. The marker bar gives it a shape, so it is never
+   shown by colour alone. */
+.versions-table tr.current td {
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.versions-table tr.current td.col-original {
+  text-shadow: 0 0 18px var(--accent-glow);
+}
+
+/* The table and the sung line's marker, which is placed over it. */
+.versions-wrap {
+  position: relative;
+}
+
+.sung-marker {
+  position: absolute;
+  top: 0;
+  left: 0.25rem;
+  width: 3px;
+  height: 0;
+  background: var(--accent);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.sung-marker[data-placed] {
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* inline-flex, so the cell's baseline is the button's first line, not its last. */
+.seek-button {
+  display: inline-flex;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+}
+
+.seek-button:hover {
+  color: var(--accent);
+}
+
+/* Study tools: the Hide toggles, a covered cell's Show button, and the looped line's mark. */
+.hide-toggles {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.show-button {
+  padding: 0 0.625rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--dim);
+  background: var(--surface-2);
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+}
+
+.show-button:hover {
+  color: var(--text);
+}
+
+.loop-mark {
+  display: inline-flex;
+  margin-left: 0.5rem;
+  color: var(--accent);
+  vertical-align: middle;
+}
+
+.loop-mark .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* The keyboard shortcut list: a small panel above the player bar. */
+.shortcut-list {
+  position: fixed;
+  z-index: 5;
+  right: max(2rem, env(safe-area-inset-right));
+  bottom: 6rem;
+  width: min(22rem, calc(100vw - 2rem));
+  padding: 0.75rem 1rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.shortcut-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shortcut-list h2 {
+  font-size: 1rem;
+}
+
+.shortcut-list table {
+  width: 100%;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.shortcut-list th,
+.shortcut-list td {
+  padding: 0.375rem 0;
+  text-align: left;
+}
+
+.shortcut-list th {
+  padding-right: 1rem;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.shortcut-list kbd {
+  padding: 0.125rem 0.375rem;
+  font: inherit;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+/* Focus mode: bigger text and more room. */
+.is-focus .versions-table {
+  max-width: 81rem;
+}
+
+.is-focus .versions-table td {
+  --row-pad: 0.75rem;
+  --line-box: 2.125rem;
+
+  padding-right: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.is-focus .versions-table td.col-original {
+  font-size: 1.625rem;
+}
+
+.is-focus .versions-table td.col-hiragana {
+  font-size: 1.3125rem;
+}
+
+.is-focus .versions-table td.col-romaji {
+  font-size: 1.1875rem;
+}
+
+.is-focus .versions-table td.col-english {
+  font-size: 1.0625rem;
+}

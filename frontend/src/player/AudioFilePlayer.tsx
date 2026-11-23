@@ -19,8 +19,7 @@ export function AudioFilePlayer({ file, onClock }: AudioFilePlayerProps) {
     element.src = url;
     onClock({
       timeMs: () => element.currentTime * 1000,
-      durationMs: () =>
-        Number.isFinite(element.duration) ? element.duration * 1000 : null,
+      durationMs: () => (Number.isFinite(element.duration) ? element.duration * 1000 : null),
       isPlaying: () => !element.paused,
       play: () => {
         void element.play().catch(() => undefined);

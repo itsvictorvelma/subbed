@@ -15,10 +15,7 @@ export function ShortcutList({ shortcuts, onClose }: ShortcutListProps) {
 
   // Focus moves into the panel, and back to what had it (usually the opening button) on close.
   useEffect(() => {
-    const opener =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeRef.current?.focus();
     return () => {
       opener?.focus();
@@ -26,11 +23,7 @@ export function ShortcutList({ shortcuts, onClose }: ShortcutListProps) {
   }, []);
 
   return (
-    <div
-      className="shortcut-list"
-      role="dialog"
-      aria-labelledby="shortcut-list-title"
-    >
+    <div className="shortcut-list" role="dialog" aria-labelledby="shortcut-list-title">
       <div className="shortcut-list-head">
         <h2 id="shortcut-list-title">{SHORTCUT_LIST_TITLE}</h2>
         <button

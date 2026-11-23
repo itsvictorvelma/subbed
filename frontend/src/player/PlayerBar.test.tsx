@@ -42,10 +42,7 @@ function putBodies(): unknown[] {
 test("spec 012 AC-7: a YouTube link plays that video and is saved with the song", async () => {
   const user = await openSavedSong(songReply(LINES));
 
-  await user.type(
-    screen.getByLabelText("YouTube link"),
-    `https://youtu.be/${VIDEO_ID}`,
-  );
+  await user.type(screen.getByLabelText("YouTube link"), `https://youtu.be/${VIDEO_ID}`);
   await user.click(screen.getByRole("button", { name: "Play video" }));
 
   await waitFor(() => {
@@ -57,10 +54,7 @@ test("spec 012 AC-7: a YouTube link plays that video and is saved with the song"
 test("spec 014 AC-17: a guest's YouTube link plays with no error and no save request", async () => {
   const user = await openSongAsGuest(songReply(LINES, null, 0, false));
 
-  await user.type(
-    screen.getByLabelText("YouTube link"),
-    `https://youtu.be/${VIDEO_ID}`,
-  );
+  await user.type(screen.getByLabelText("YouTube link"), `https://youtu.be/${VIDEO_ID}`);
   await user.click(screen.getByRole("button", { name: "Play video" }));
   await waitFor(() => {
     expect(fakePlayer.createdFor).toEqual([VIDEO_ID]);
@@ -74,10 +68,7 @@ test("spec 014 AC-17: a guest's YouTube link plays with no error and no save req
 test("spec 012 AC-7: any other link shows the error and embeds nothing", async () => {
   const user = await openSavedSong(songReply(LINES));
 
-  await user.type(
-    screen.getByLabelText("YouTube link"),
-    "https://vimeo.com/123",
-  );
+  await user.type(screen.getByLabelText("YouTube link"), "https://vimeo.com/123");
   await user.click(screen.getByRole("button", { name: "Play video" }));
 
   expect((await screen.findByRole("alert")).textContent).toBe(BAD_LINK_MESSAGE);
@@ -124,9 +115,7 @@ test("spec 012 AC-10: Later and Earlier move the sync by a quarter second and sa
 });
 
 test("spec 012 AC-11: a song without timings says so and has no sync or seek buttons", async () => {
-  await openSavedSong(
-    songReply(LINES.map((line) => ({ ...line, startMs: null }))),
-  );
+  await openSavedSong(songReply(LINES.map((line) => ({ ...line, startMs: null }))));
 
   expect(screen.getByText(NO_TIMINGS_TEXT)).toBeTruthy();
   expect(screen.queryByRole("button", { name: "Later" })).toBeNull();
@@ -139,9 +128,7 @@ test("AC-8: while the audio plays, the sung row is current", async () => {
   await openSavedSong(songReply(LINES, VIDEO_ID));
 
   await waitFor(() => {
-    expect(document.querySelector("tr.current")?.textContent).toContain(
-      "風が歌う",
-    );
+    expect(document.querySelector("tr.current")?.textContent).toContain("風が歌う");
   });
 });
 
@@ -150,17 +137,13 @@ test("spec 018 AC-2: a line is sung from 0.3 s before its start time, not earlie
   fakePlayer.seconds = 3.6;
   await openSavedSong(songReply(LINES, VIDEO_ID));
   await waitFor(() => {
-    expect(document.querySelector("tr.current")?.textContent).toContain(
-      "星の道",
-    );
+    expect(document.querySelector("tr.current")?.textContent).toContain("星の道");
   });
 
   fakePlayer.seconds = 3.75;
 
   await waitFor(() => {
-    expect(document.querySelector("tr.current")?.textContent).toContain(
-      "風が歌う",
-    );
+    expect(document.querySelector("tr.current")?.textContent).toContain("風が歌う");
   });
 });
 
@@ -169,9 +152,7 @@ test("spec 018 AC-3: the line after the sung one is marked next, across a verse 
   await openSavedSong(songReply(LINES, VIDEO_ID));
 
   await waitFor(() => {
-    expect(document.querySelector("tr.current")?.textContent).toContain(
-      "風が歌う",
-    );
+    expect(document.querySelector("tr.current")?.textContent).toContain("風が歌う");
   });
   const next = document.querySelectorAll("tr.next");
   expect(next).toHaveLength(1);
@@ -183,12 +164,10 @@ test("spec 018 AC-5, spec 026 AC-2 and AC-4: following glides the sung row 35% d
   const scrollTo = vi.fn();
   vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(400);
   vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(2000);
-  vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(
-    function (this: Element) {
-      const top = this.matches("tr.current") ? 360 : 0;
-      return { top, bottom: top + 40, height: 40 } as DOMRect;
-    },
-  );
+  vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+    const top = this.matches("tr.current") ? 360 : 0;
+    return { top, bottom: top + 40, height: 40 } as DOMRect;
+  });
   HTMLElement.prototype.scrollTo = scrollTo;
   fakePlayer.seconds = 5;
   fakePlayer.playing = true;
@@ -207,9 +186,7 @@ test("spec 018 AC-5, spec 026 AC-2 and AC-4: following glides the sung row 35% d
 
   // The page's own scrolling never pauses following.
   fireEvent.scroll(lyrics);
-  expect(
-    screen.queryByRole("button", { name: "Back to the current line" }),
-  ).toBeNull();
+  expect(screen.queryByRole("button", { name: "Back to the current line" })).toBeNull();
 
   fireEvent.wheel(lyrics, { deltaY: 200 });
   const back = await screen.findByRole("button", {
@@ -220,17 +197,13 @@ test("spec 018 AC-5, spec 026 AC-2 and AC-4: following glides the sung row 35% d
   scrollTo.mockClear();
   fakePlayer.seconds = 9.6;
   await waitFor(() => {
-    expect(document.querySelector("tr.current")?.textContent).toContain(
-      "夜の月",
-    );
+    expect(document.querySelector("tr.current")?.textContent).toContain("夜の月");
   });
   expect(scrollTo).not.toHaveBeenCalled();
 
   await user.click(back);
 
-  expect(
-    screen.queryByRole("button", { name: "Back to the current line" }),
-  ).toBeNull();
+  expect(screen.queryByRole("button", { name: "Back to the current line" })).toBeNull();
   await waitFor(() => {
     expect(scrollTo).toHaveBeenLastCalledWith({
       top: 220,
@@ -260,9 +233,7 @@ test("AC-9: play/pause, previous and next line, and the position slider control 
 
   fakePlayer.seconds = 9.6;
   await waitFor(() => {
-    expect(document.querySelector("tr.current")?.textContent).toContain(
-      "夜の月",
-    );
+    expect(document.querySelector("tr.current")?.textContent).toContain("夜の月");
   });
   await user.click(screen.getByRole("button", { name: "Previous line" }));
   expect(fakePlayer.seeks).toEqual([1.5, 30, 4.5]);
@@ -280,9 +251,7 @@ test("spec 022 AC-1, AC-4: the volume slider sets the YouTube player's volume, a
     target: { value: "40" },
   });
   expect(fakePlayer.volume).toBe(40);
-  expect(screen.getByLabelText("Volume").getAttribute("aria-valuetext")).toBe(
-    "40%",
-  );
+  expect(screen.getByLabelText("Volume").getAttribute("aria-valuetext")).toBe("40%");
 
   // YouTube's player only takes a volume once ready: the level is applied again then.
   fakePlayer.volume = null;
@@ -349,18 +318,14 @@ test("spec 024 AC-1: the speed button cycles and sets the YouTube player's rate,
 
   await user.click(screen.getByRole("button", { name: "Playback speed: 1×" }));
   expect(fakePlayer.rate).toBe(0.75);
-  await user.click(
-    screen.getByRole("button", { name: "Playback speed: 0.75×" }),
-  );
+  await user.click(screen.getByRole("button", { name: "Playback speed: 0.75×" }));
   expect(fakePlayer.rate).toBe(0.5);
 
   fakePlayer.rate = null;
   fakePlayer.becomeReady();
   expect(fakePlayer.rate).toBe(0.5);
 
-  await user.click(
-    screen.getByRole("button", { name: "Playback speed: 0.5×" }),
-  );
+  await user.click(screen.getByRole("button", { name: "Playback speed: 0.5×" }));
   expect(fakePlayer.rate).toBe(1);
 });
 
@@ -409,8 +374,7 @@ test("spec 024 AC-3: Find on YouTube opens a search for the song in a new tab", 
 
   const link = screen.getByRole("link", { name: "Find on YouTube" });
   expect(link.getAttribute("href")).toBe(
-    "https://www.youtube.com/results?search_query=" +
-      encodeURIComponent("星の歌 ミナト"),
+    "https://www.youtube.com/results?search_query=" + encodeURIComponent("星の歌 ミナト"),
   );
   expect(link.getAttribute("target")).toBe("_blank");
   expect(link.getAttribute("rel")).toBe("noopener noreferrer");
@@ -444,18 +408,14 @@ test("spec 012: saving the video of a song that is not saved is quiet, not an er
   fakeFetch.mockImplementation((input, init) =>
     init?.method === "PUT"
       ? Promise.resolve(
-          new Response(
-            JSON.stringify({ code: "song_not_found", message: "Not saved." }),
-            { status: 404 },
-          ),
+          new Response(JSON.stringify({ code: "song_not_found", message: "Not saved." }), {
+            status: 404,
+          }),
         )
       : (answerByAddress?.(input, init) ?? Promise.reject(new TypeError())),
   );
 
-  await user.type(
-    screen.getByLabelText("YouTube link"),
-    `https://youtu.be/${VIDEO_ID}`,
-  );
+  await user.type(screen.getByLabelText("YouTube link"), `https://youtu.be/${VIDEO_ID}`);
   await user.click(screen.getByRole("button", { name: "Play video" }));
 
   await waitFor(() => {
@@ -466,10 +426,7 @@ test("spec 012: saving the video of a song that is not saved is quiet, not an er
 
 test("spec 016 AC-8: Save keeps the song with the video and sync now playing; Saved again unsaves it", async () => {
   const user = await openSavedSong(songReply(LINES, null, 0, false));
-  await user.type(
-    screen.getByLabelText("YouTube link"),
-    `https://youtu.be/${VIDEO_ID}`,
-  );
+  await user.type(screen.getByLabelText("YouTube link"), `https://youtu.be/${VIDEO_ID}`);
   await user.click(screen.getByRole("button", { name: "Play video" }));
   await user.click(screen.getByRole("button", { name: "Later" }));
   const save = screen.getByRole("button", { name: "Save" });
@@ -479,9 +436,7 @@ test("spec 016 AC-8: Save keeps the song with the video and sync now playing; Sa
 
   const saved = await screen.findByRole("button", { name: "Saved" });
   expect(saved.getAttribute("aria-pressed")).toBe("true");
-  expect(callsTo("PUT", "/api/songs/101/saved")).toEqual([
-    { videoId: VIDEO_ID, offsetMs: 250 },
-  ]);
+  expect(callsTo("PUT", "/api/songs/101/saved")).toEqual([{ videoId: VIDEO_ID, offsetMs: 250 }]);
 
   await user.click(saved);
 
@@ -496,37 +451,30 @@ test("spec 016: a failed Save says so and keeps the button as it was", async () 
   fakeFetch.mockImplementation((input, init) =>
     init?.method === "PUT"
       ? Promise.resolve(
-          new Response(
-            JSON.stringify({ code: "internal_error", message: "Failed." }),
-            { status: 500 },
-          ),
+          new Response(JSON.stringify({ code: "internal_error", message: "Failed." }), {
+            status: 500,
+          }),
         )
       : (answerByAddress?.(input, init) ?? Promise.reject(new TypeError())),
   );
 
   await user.click(screen.getByRole("button", { name: "Save" }));
 
-  expect((await screen.findByRole("alert")).textContent).toContain(
-    "Couldn't update your songs.",
-  );
-  expect(
-    screen.getByRole("button", { name: "Save" }).getAttribute("aria-pressed"),
-  ).toBe("false");
+  expect((await screen.findByRole("alert")).textContent).toContain("Couldn't update your songs.");
+  expect(screen.getByRole("button", { name: "Save" }).getAttribute("aria-pressed")).toBe("false");
 });
 
 test("spec 026 AC-6: one marker shows while a line is sung, placed and sized to the sung row", async () => {
   // The table starts at (20, 100); the sung row at (30, 300) and is 50px tall.
-  vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(
-    function (this: Element) {
-      if (this.matches(".versions-wrap")) {
-        return { top: 100, left: 20, height: 900 } as DOMRect;
-      }
-      if (this.matches("tr.current")) {
-        return { top: 300, left: 30, height: 50 } as DOMRect;
-      }
-      return { top: 0, left: 0, height: 0 } as DOMRect;
-    },
-  );
+  vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+    if (this.matches(".versions-wrap")) {
+      return { top: 100, left: 20, height: 900 } as DOMRect;
+    }
+    if (this.matches("tr.current")) {
+      return { top: 300, left: 30, height: 50 } as DOMRect;
+    }
+    return { top: 0, left: 0, height: 0 } as DOMRect;
+  });
   fakePlayer.seconds = 0;
   await openSavedSong(songReply(LINES, VIDEO_ID));
   expect(document.querySelectorAll(".sung-marker")).toHaveLength(0);
@@ -537,18 +485,14 @@ test("spec 026 AC-6: one marker shows while a line is sung, placed and sized to 
   // The marker is placed by an effect just after it appears, so wait for its size too.
   await waitFor(() => {
     expect(document.querySelectorAll(".sung-marker")).toHaveLength(1);
-    expect(
-      document.querySelector<HTMLElement>(".sung-marker")?.style.height,
-    ).toBe("28px");
+    expect(document.querySelector<HTMLElement>(".sung-marker")?.style.height).toBe("28px");
   });
   const marker = document.querySelector<HTMLElement>(".sung-marker");
   // 56% of the row's 50px, centred: 200 + (50 - 28) / 2 = 211 down, 10 across.
   expect(marker?.style.height).toBe("28px");
   expect(marker?.style.transform).toBe("translate(10px, 211px)");
   expect(marker?.getAttribute("aria-hidden")).toBe("true");
-  expect(
-    document.querySelector("tr.current")?.getAttribute("aria-current"),
-  ).toBe("true");
+  expect(document.querySelector("tr.current")?.getAttribute("aria-current")).toBe("true");
 });
 
 test("spec 026 AC-6: a song without timings shows no marker while its audio plays", async () => {
@@ -591,9 +535,7 @@ test("spec 029 AC-1: the phone sheet opens from the bar and closes by its handle
   expect(document.activeElement).toBe(
     within(sheet).getByRole("button", { name: CLOSE_SHEET_LABEL }),
   );
-  await user.click(
-    within(sheet).getByRole("button", { name: CLOSE_SHEET_LABEL }),
-  );
+  await user.click(within(sheet).getByRole("button", { name: CLOSE_SHEET_LABEL }));
   expect(screen.queryByRole("dialog")).toBeNull();
   expect(document.activeElement).toBe(sheetOpenButton());
 
@@ -612,17 +554,11 @@ test("spec 029 AC-2: the slim bar is named by the sung line and shows the time",
   fakePlayer.seconds = 5;
   await openSavedSong(songReply(LINES, VIDEO_ID));
   await waitFor(() => {
-    expect(document.querySelector(".mini-line-text")?.textContent).toBe(
-      "風が歌う",
-    );
+    expect(document.querySelector(".mini-line-text")?.textContent).toBe("風が歌う");
   });
-  expect(document.querySelector(".mini-line-time")?.textContent).toMatch(
-    /^0:05 \/ /,
-  );
+  expect(document.querySelector(".mini-line-time")?.textContent).toMatch(/^0:05 \/ /);
   expect(
-    screen
-      .getByRole("button", { name: /^風が歌う ?0:05/ })
-      .getAttribute("aria-haspopup"),
+    screen.getByRole("button", { name: /^風が歌う ?0:05/ }).getAttribute("aria-haspopup"),
   ).toBe("dialog");
 });
 
@@ -636,9 +572,7 @@ test("spec 029 AC-1: Esc closes the sheet, not the keyboard shortcut list behind
 
   await user.keyboard("{Escape}");
   expect(screen.queryByRole("dialog", { name: PLAY_ALONG_TITLE })).toBeNull();
-  expect(
-    screen.getByRole("dialog", { name: SHORTCUT_LIST_TITLE }),
-  ).toBeTruthy();
+  expect(screen.getByRole("dialog", { name: SHORTCUT_LIST_TITLE })).toBeTruthy();
 });
 
 test("spec 029 AC-1: Tab stays inside the open sheet", async () => {
@@ -696,9 +630,9 @@ test("spec 029 AC-3: the sheet holds the slider, transport, loop, speed, mute, s
 test("spec 029 AC-5: the eye button hides and shows the phone column, with the same state as the Hide toggles", async () => {
   const user = await openSavedSong(songReply(LINES));
   const eye = screen.getByRole("button", { name: "Hide this column" });
-  const hideKana = within(
-    screen.getByRole("group", { name: "Hide columns" }),
-  ).getByRole("button", { name: "かな" });
+  const hideKana = within(screen.getByRole("group", { name: "Hide columns" })).getByRole("button", {
+    name: "かな",
+  });
 
   await user.click(eye);
   expect(eye.getAttribute("aria-pressed")).toBe("true");

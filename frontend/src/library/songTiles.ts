@@ -31,10 +31,7 @@ export function firstCharacter(title: string): string {
 export function openedLabel(openedAtMs: number, nowMs: number): string {
   const startOfToday = new Date(nowMs).setHours(0, 0, 0, 0);
   const startOfOpenedDay = new Date(openedAtMs).setHours(0, 0, 0, 0);
-  const days = Math.max(
-    0,
-    Math.round((startOfToday - startOfOpenedDay) / DAY_MS),
-  );
+  const days = Math.max(0, Math.round((startOfToday - startOfOpenedDay) / DAY_MS));
   if (days === 0) {
     return "Opened today";
   }
@@ -49,9 +46,7 @@ export function sortSongs(songs: SavedSong[], order: SortOrder): SavedSong[] {
     sorted.sort((a, b) => a.track.localeCompare(b.track, "ja"));
   } else {
     sorted.sort(
-      (a, b) =>
-        a.artist.localeCompare(b.artist, "ja") ||
-        a.track.localeCompare(b.track, "ja"),
+      (a, b) => a.artist.localeCompare(b.artist, "ja") || a.track.localeCompare(b.track, "ja"),
     );
   }
   return sorted;

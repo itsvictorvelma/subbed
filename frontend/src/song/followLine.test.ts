@@ -1,12 +1,7 @@
 // Checks steady following: the sung row's place 35% down the view, and the ease-out glide (spec 026).
 import { renderHook } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
-import {
-  GLIDE_MS,
-  glidePosition,
-  scrollTarget,
-  useFollowLine,
-} from "./followLine";
+import { GLIDE_MS, glidePosition, scrollTarget, useFollowLine } from "./followLine";
 
 const VIEW_HEIGHT = 500;
 const MAX_SCROLL = 3000;

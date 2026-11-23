@@ -51,24 +51,16 @@ test("AC-1: tiles are most recently opened first; A–Z and Artist reorder them"
   expect(tileNames()).toEqual(["Open 雨の夜 by アオ", "Open 風の道 by ミナト"]);
   await user.click(screen.getByRole("button", { name: "Artist" }));
   expect(tileNames()).toEqual(["Open 雨の夜 by アオ", "Open 風の道 by ミナト"]);
-  expect(
-    screen.getByRole("button", { name: "Artist" }).getAttribute("aria-pressed"),
-  ).toBe("true");
+  expect(screen.getByRole("button", { name: "Artist" }).getAttribute("aria-pressed")).toBe("true");
   await user.click(screen.getByRole("button", { name: "A–Z" }));
-  const byTitle = [...songs].sort((a, b) =>
-    a.track.localeCompare(b.track, "ja"),
-  );
-  expect(tileNames()).toEqual(
-    byTitle.map((s) => `Open ${s.track} by ${s.artist}`),
-  );
+  const byTitle = [...songs].sort((a, b) => a.track.localeCompare(b.track, "ja"));
+  expect(tileNames()).toEqual(byTitle.map((s) => `Open ${s.track} by ${s.artist}`));
 });
 
 test("AC-2: with no saved songs, the library welcomes you with an example", () => {
   renderLibrary([]);
 
-  expect(
-    screen.getByRole("heading", { name: EMPTY_LIBRARY_TEXT }),
-  ).toBeTruthy();
+  expect(screen.getByRole("heading", { name: EMPTY_LIBRARY_TEXT })).toBeTruthy();
   expect(screen.getByText(EMPTY_LIBRARY_HINT)).toBeTruthy();
 });
 
@@ -100,20 +92,12 @@ function manySongs(count: number): SavedSong[] {
 test("spec 025 AC-6: the filter shows above 8 songs, matches title or artist, and says when none match", async () => {
   const user = userEvent.setup();
   const { rerender } = render(
-    <LibraryPage
-      songs={manySongs(FILTER_SHOWN_ABOVE)}
-      onOpen={vi.fn()}
-      onRemove={vi.fn()}
-    />,
+    <LibraryPage songs={manySongs(FILTER_SHOWN_ABOVE)} onOpen={vi.fn()} onRemove={vi.fn()} />,
   );
   expect(screen.queryByLabelText("Filter your songs")).toBeNull();
 
   rerender(
-    <LibraryPage
-      songs={manySongs(FILTER_SHOWN_ABOVE + 1)}
-      onOpen={vi.fn()}
-      onRemove={vi.fn()}
-    />,
+    <LibraryPage songs={manySongs(FILTER_SHOWN_ABOVE + 1)} onOpen={vi.fn()} onRemove={vi.fn()} />,
   );
   const filter = screen.getByLabelText("Filter your songs");
   await user.type(filter, "STAR");
@@ -128,11 +112,7 @@ test("spec 025 AC-6: the filter shows above 8 songs, matches title or artist, an
 
   // Down to 8 songs, the box hides and its text no longer hides any song.
   rerender(
-    <LibraryPage
-      songs={manySongs(FILTER_SHOWN_ABOVE)}
-      onOpen={vi.fn()}
-      onRemove={vi.fn()}
-    />,
+    <LibraryPage songs={manySongs(FILTER_SHOWN_ABOVE)} onOpen={vi.fn()} onRemove={vi.fn()} />,
   );
   expect(screen.getAllByRole("listitem")).toHaveLength(FILTER_SHOWN_ABOVE);
 });

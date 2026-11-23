@@ -2,6 +2,7 @@
 // Back and Forward work.
 import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
+import type { Song } from "./types";
 
 // A whole number from 1 up, short enough to stay exact in JavaScript.
 const SONG_PATH = /^\/song\/([1-9][0-9]{0,14})\/?$/;
@@ -78,8 +79,7 @@ export function followLink(path: string) {
 // Back to the Subbed page before this one; home when this page was opened from outside.
 export function goBack(): void {
   const state: unknown = window.history.state;
-  const cameFromSubbed =
-    typeof state === "object" && state !== null && "subbed" in state;
+  const cameFromSubbed = typeof state === "object" && state !== null && "subbed" in state;
   if (cameFromSubbed) {
     window.history.back();
   } else {
@@ -104,4 +104,22 @@ export function useRoute(onChange: (route: Route) => void): Route {
   }, [onChange]);
 
   return route;
+}
+
+const SITE_NAME = "Subbed";
+
+// The browser tab's title for the page shown.
+export function pageTitle(route: Route, song: Song | null, signedIn = false): string {
+  if (route.page === "home") {
+    return `${SITE_NAME} · Read Japanese songs line by line`;
+  }
+  if (route.page === "library") {
+    return `Your songs · ${SITE_NAME}`;
+  }
+  if (route.page === "account") {
+    return signedIn ? `Your account · ${SITE_NAME}` : `Sign in · ${SITE_NAME}`;
+  }
+  return song === null
+    ? `Opening… · ${SITE_NAME}`
+    : `${song.track} · ${song.artist} · ${SITE_NAME}`;
 }

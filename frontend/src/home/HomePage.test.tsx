@@ -84,11 +84,9 @@ test("AC-1: Your songs goes to the library and the wordmark back home", async ()
   await user.click(screen.getByRole("link", { name: "Your songs" }));
   expect(window.location.pathname).toBe("/library");
   expect(await screen.findByText("Your songs will show up here.")).toBeTruthy();
-  expect(
-    screen
-      .getByRole("link", { name: "Your songs" })
-      .getAttribute("aria-current"),
-  ).toBe("page");
+  expect(screen.getByRole("link", { name: "Your songs" }).getAttribute("aria-current")).toBe(
+    "page",
+  );
 
   await user.click(screen.getByRole("link", { name: /subbed/ }));
   expect(window.location.pathname).toBe("/");
@@ -106,9 +104,7 @@ test("spec 029 AC-4: on a phone the header's search icon opens and focuses the s
   await user.click(toggle);
 
   expect(toggle.getAttribute("aria-expanded")).toBe("true");
-  expect(document.querySelector(".site-header")?.className).toContain(
-    "is-searching",
-  );
+  expect(document.querySelector(".site-header")?.className).toContain("is-searching");
   expect(document.activeElement).toBe(
     screen.getByRole("searchbox", { name: "Song name or artist" }),
   );
@@ -191,11 +187,9 @@ test("AC-9: the footer credits LRCLIB, Groq, and Gemini and links the source", (
   const footer = screen.getByRole("contentinfo");
   expect(footer.textContent).toContain("Lyrics from LRCLIB");
   expect(footer.textContent).toContain("Groq and Gemini");
-  expect(
-    within(footer)
-      .getByRole("link", { name: "Source on GitHub" })
-      .getAttribute("href"),
-  ).toBe(SOURCE_CODE_URL);
+  expect(within(footer).getByRole("link", { name: "Source on GitHub" }).getAttribute("href")).toBe(
+    SOURCE_CODE_URL,
+  );
 });
 
 test.each(["/", "/library"])(
@@ -225,8 +219,7 @@ test.each(["/", "/library"])(
 test("spec 023 AC-1: Home and Your songs are in the header, the current page marked", async () => {
   const user = userEvent.setup();
   render(<App />);
-  const current = (name: string) =>
-    screen.getByRole("link", { name }).getAttribute("aria-current");
+  const current = (name: string) => screen.getByRole("link", { name }).getAttribute("aria-current");
 
   expect(current("Home")).toBe("page");
   expect(current("Your songs")).toBeNull();
@@ -252,14 +245,10 @@ test("spec 014 AC-17: a guest's home has no Continue card, and says to sign in t
   recentSongs = [star];
   render(<App />);
 
-  expect(
-    await screen.findByText("to save songs.", { exact: false }),
-  ).toBeTruthy();
+  expect(await screen.findByText("to save songs.", { exact: false })).toBeTruthy();
   expect(screen.queryByRole("button", { name: /^Continue/ })).toBeNull();
   expect(screen.queryByRole("link", { name: /All your songs/ })).toBeNull();
-  expect(
-    screen.getByRole("heading", { name: "Songs already in Subbed" }),
-  ).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Songs already in Subbed" })).toBeTruthy();
   const asked = fakeFetch.mock.calls.map(([url]) => url);
   expect(asked).not.toContain("/api/songs");
 });

@@ -37,15 +37,12 @@ export function useHiddenColumns() {
     setHidden(next);
     storeSetting(STORAGE_KEY, JSON.stringify([...next]));
     setRevealed(
-      (previous) =>
-        new Set([...previous].filter((key) => !key.startsWith(`${column}:`))),
+      (previous) => new Set([...previous].filter((key) => !key.startsWith(`${column}:`))),
     );
   }
 
   function revealCell(column: VersionColumn, lineIndex: number) {
-    setRevealed((previous) =>
-      new Set(previous).add(cellKey(column, lineIndex)),
-    );
+    setRevealed((previous) => new Set(previous).add(cellKey(column, lineIndex)));
   }
 
   return { hidden, revealed, toggleColumn, revealCell };

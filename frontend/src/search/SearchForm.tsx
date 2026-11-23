@@ -17,11 +17,7 @@ interface SearchFormProps {
   size?: "regular" | "large";
 }
 
-export function SearchForm({
-  busy,
-  onSearch,
-  size = "regular",
-}: SearchFormProps) {
+export function SearchForm({ busy, onSearch, size = "regular" }: SearchFormProps) {
   const [query, setQuery] = useState("");
   const canSearch = !busy && query.trim() !== "";
 

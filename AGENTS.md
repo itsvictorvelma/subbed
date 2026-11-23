@@ -29,7 +29,7 @@ The previous version of this app is preserved at git tag `archive/cursor-v1`. It
 - **Layout.** Columns side by side, one row per lyric line.
 - **Hosting.** Live at https://subbed.ca for the user, family, and friends (specs 020 and 030): one small server with Docker and Caddy, behind Cloudflare's proxy. Locally it still runs on `127.0.0.1`. The user handles the server, the domain, and Cloudflare.
 - **Roadmap:** done so far: the core, saved songs (library), synced playback (YouTube embed and optional MP3, with LRCLIB timings), the design pass, study tools, personal accounts (spec 014), the Subbed name (028), the phone redesign (029), and going live (020, 030). Next: groundwork for more languages, then Korean.
-- **Design.** The design pass (spec 013) set the look: the colour tokens and patterns in `frontend/src/styles.css`. New UI reuses them; anything new to the look is proposed and approved first.
+- **Design.** The design pass (spec 013) set the look: the colour tokens in `frontend/src/styles/tokens.css` and the patterns in the other files of `frontend/src/styles/`. New UI reuses them; anything new to the look is proposed and approved first.
 - **Stack.** Python server in `backend/` (FastAPI, uvicorn, uv, pytest), React page in `frontend/` (Vite, TypeScript, Vitest with jsdom and Testing Library). `scripts/check.sh` runs every check.
 - **Never push to `main`.** Every change is a PR the user reviews and merges.
 
