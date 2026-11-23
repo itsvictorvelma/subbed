@@ -20,14 +20,7 @@ import type { AudioClock } from "./playback";
 import { PlayerControls } from "./PlayerControls";
 import type { Playback, Progress } from "../types";
 import { YouTubePlayer } from "./YouTubePlayer";
-import {
-  ChevronUpIcon,
-  CloseIcon,
-  KeyboardIcon,
-  LinkIcon,
-  MusicIcon,
-  VideoIcon,
-} from "../icons";
+import { ChevronUpIcon, CloseIcon, KeyboardIcon, LinkIcon, MusicIcon, VideoIcon } from "../icons";
 
 export const BAD_LINK_MESSAGE = "That doesn't look like a YouTube link.";
 const PLAYER_FAILED_MESSAGE = "Couldn't load the YouTube player. Try again.";
@@ -44,8 +37,7 @@ function startsWithVideoShown(): boolean {
   return !matchesMedia(PHONE_QUERY);
 }
 
-type Source =
-  { kind: "youtube"; videoId: string } | { kind: "file"; file: File } | null;
+type Source = { kind: "youtube"; videoId: string } | { kind: "file"; file: File } | null;
 
 // Whether an element is drawn; true where the browser can't tell (jsdom in tests has no checkVisibility).
 function isShown(element: HTMLElement): boolean {
@@ -78,9 +70,7 @@ interface PlayerBarProps {
 
 export function PlayerBar(props: PlayerBarProps) {
   const { songId, savedVideoId, offsetMs, onOffsetChange } = props;
-  const [link, setLink] = useState(
-    savedVideoId === null ? "" : `https://youtu.be/${savedVideoId}`,
-  );
+  const [link, setLink] = useState(savedVideoId === null ? "" : `https://youtu.be/${savedVideoId}`);
   const guest = isGuest(useAccount());
   const [videoId, setVideoId] = useState(savedVideoId);
   const [source, setSource] = useState<Source>(
@@ -278,9 +268,7 @@ export function PlayerBar(props: PlayerBarProps) {
           </button>
         )}
         {source?.kind === "youtube" && (
-          <div
-            className={videoShown ? "video-window" : "video-window is-hidden"}
-          >
+          <div className={videoShown ? "video-window" : "video-window is-hidden"}>
             <YouTubePlayer
               videoId={source.videoId}
               onClock={handleClock}
@@ -298,9 +286,7 @@ export function PlayerBar(props: PlayerBarProps) {
             </button>
           </div>
         )}
-        {source?.kind === "file" && (
-          <AudioFilePlayer file={source.file} onClock={handleClock} />
-        )}
+        {source?.kind === "file" && <AudioFilePlayer file={source.file} onClock={handleClock} />}
         {error !== null && (
           <p role="alert" className="error">
             {error}
@@ -430,12 +416,7 @@ interface AudioChooserProps {
 function AudioChooser(props: AudioChooserProps) {
   return (
     <div className="audio-chooser" role="group" aria-label={PLAY_ALONG_TITLE}>
-      <a
-        className="pill-button"
-        href={props.searchUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a className="pill-button" href={props.searchUrl} target="_blank" rel="noopener noreferrer">
         <VideoIcon /> Find on YouTube
       </a>
       <form
@@ -458,11 +439,7 @@ function AudioChooser(props: AudioChooserProps) {
             props.onLinkChange(event.target.value);
           }}
         />
-        <button
-          type="submit"
-          className="find-button"
-          disabled={props.link.trim() === ""}
-        >
+        <button type="submit" className="find-button" disabled={props.link.trim() === ""}>
           Play video
         </button>
       </form>

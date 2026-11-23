@@ -13,9 +13,7 @@ import {
 
 export function HeroLine() {
   // With reduced motion the line starts, and stays, fully shown.
-  const [tick, setTick] = useState(() =>
-    prefersReducedMotion() ? HERO_LAST_TICK : 0,
-  );
+  const [tick, setTick] = useState(() => (prefersReducedMotion() ? HERO_LAST_TICK : 0));
   const finished = tick >= HERO_LAST_TICK;
 
   useEffect(() => {
@@ -34,11 +32,7 @@ export function HeroLine() {
     <figure className="hero-line" role="img" aria-label={HERO_LABEL}>
       <div className="hero-parts" lang="ja" aria-hidden="true">
         {HERO_PARTS.map((part, index) => (
-          <div
-            key={part.original}
-            className="hero-part"
-            data-state={partStateAt(tick, index)}
-          >
+          <div key={part.original} className="hero-part" data-state={partStateAt(tick, index)}>
             <span className="hero-original">{part.original}</span>
             <span className="hero-hiragana">{part.hiragana}</span>
             <span className="hero-romaji" lang="en">
@@ -47,11 +41,7 @@ export function HeroLine() {
           </div>
         ))}
       </div>
-      <p
-        className="hero-english"
-        aria-hidden="true"
-        data-shown={englishShownAt(tick)}
-      >
+      <p className="hero-english" aria-hidden="true" data-shown={englishShownAt(tick)}>
         {HERO_ENGLISH}
       </p>
     </figure>

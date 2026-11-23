@@ -6,16 +6,7 @@ const KANA =
   "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン" +
   "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
 // Short everyday words a learner may catch as one column spells them out.
-const RAIN_WORDS = [
-  "うた",
-  "こえ",
-  "よる",
-  "ほし",
-  "そら",
-  "ゆめ",
-  "かぜ",
-  "はな",
-];
+const RAIN_WORDS = ["うた", "こえ", "よる", "ほし", "そら", "ゆめ", "かぜ", "はな"];
 
 const FRAME_MS = 50; // about 20 frames a second
 const WORD_EVERY_MS = 3000;
@@ -72,19 +63,14 @@ export function KanaRain() {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d") ?? null;
-    return canvas === null || context === null
-      ? undefined
-      : startRain(canvas, context);
+    return canvas === null || context === null ? undefined : startRain(canvas, context);
   }, []);
 
   return <canvas ref={canvasRef} className="kana-rain" aria-hidden="true" />;
 }
 
 // Starts the rain; returns the function that stops it and lets go of every listener.
-function startRain(
-  canvas: HTMLCanvasElement,
-  context: CanvasRenderingContext2D,
-): () => void {
+function startRain(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): () => void {
   const rain: Rain = {
     canvas,
     context,
@@ -229,11 +215,7 @@ function moveColumn(rain: Rain, column: Column, index: number) {
   }
   // A spelled word glows, so it stands out from the rain around it.
   rain.context.shadowBlur = column.word === null ? 0 : rain.fontPx / 2;
-  rain.context.fillText(
-    nextCharacter(column),
-    index * rain.fontPx,
-    row * rain.fontPx,
-  );
+  rain.context.fillText(nextCharacter(column), index * rain.fontPx, row * rain.fontPx);
   if (column.row > rain.rows) {
     Object.assign(column, newColumn(0));
   }
@@ -243,8 +225,7 @@ function moveColumn(rain: Rain, column: Column, index: number) {
 function giveWordToAColumn(rain: Rain) {
   const column = rain.columns[Math.floor(Math.random() * rain.columns.length)];
   if (column !== undefined && column.row < rain.rows / 2) {
-    column.word =
-      RAIN_WORDS[Math.floor(Math.random() * RAIN_WORDS.length)] ?? null;
+    column.word = RAIN_WORDS[Math.floor(Math.random() * RAIN_WORDS.length)] ?? null;
     column.spelled = 0;
   }
 }
@@ -254,8 +235,7 @@ function newColumn(row: number): Column {
   return {
     row,
     speed:
-      SLOWEST_ROWS_PER_FRAME +
-      Math.random() * (FASTEST_ROWS_PER_FRAME - SLOWEST_ROWS_PER_FRAME),
+      SLOWEST_ROWS_PER_FRAME + Math.random() * (FASTEST_ROWS_PER_FRAME - SLOWEST_ROWS_PER_FRAME),
     word: null,
     spelled: 0,
   };

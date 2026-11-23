@@ -44,9 +44,7 @@ export function ThemeButton() {
     <button
       type="button"
       className="icon-button"
-      aria-label={
-        shown === "dark" ? "Switch to light mode" : "Switch to dark mode"
-      }
+      aria-label={shown === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       onClick={toggle}
     >
       {shown === "dark" ? <SunIcon /> : <MoonIcon />}

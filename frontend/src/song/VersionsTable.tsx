@@ -47,8 +47,7 @@ export function VersionsTable({
 
   // A version's cell: its text, or a Show button while its column is covered.
   function versionCell(line: Line, column: VersionColumn) {
-    const covered =
-      hidden.has(column) && !revealed.has(cellKey(column, line.index));
+    const covered = hidden.has(column) && !revealed.has(cellKey(column, line.index));
     if (!covered) {
       return <VersionCell text={line[column]} />;
     }
@@ -91,12 +90,7 @@ export function VersionsTable({
             {verse.map((line) => (
               <tr
                 key={line.index}
-                className={rowClass(
-                  line.index,
-                  currentLine,
-                  nextLine,
-                  loopLine,
-                )}
+                className={rowClass(line.index, currentLine, nextLine, loopLine)}
                 aria-current={line.index === currentLine ? "true" : undefined}
               >
                 <td lang="ja" className="col-original">
@@ -214,16 +208,11 @@ function LoopMark() {
 }
 
 // The first line with text after the sung one, across a verse gap; null when nothing is sung.
-function nextLineAfter(
-  lines: Line[],
-  currentLine: number | null,
-): number | null {
+function nextLineAfter(lines: Line[], currentLine: number | null): number | null {
   if (currentLine === null) {
     return null;
   }
-  const next = lines.find(
-    (line) => line.index > currentLine && line.original !== "",
-  );
+  const next = lines.find((line) => line.index > currentLine && line.original !== "");
   return next?.index ?? null;
 }
 

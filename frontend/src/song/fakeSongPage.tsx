@@ -23,11 +23,7 @@ export const LINES: Line[] = [
   timed(3, "夜の月", 9000),
 ];
 
-export function timed(
-  index: number,
-  original: string,
-  startMs: number | null,
-): Line {
+export function timed(index: number, original: string, startMs: number | null): Line {
   return {
     index,
     original,
@@ -90,11 +86,7 @@ function json(body: unknown, status = 200): Promise<Response> {
 }
 
 // Sign in, create an account, sign out, and delete, as the server answers them.
-function answerAccount(
-  method: string,
-  url: string,
-  body: string,
-): Promise<Response> | null {
+function answerAccount(method: string, url: string, body: string): Promise<Response> | null {
   const sent = (body === "" ? {} : JSON.parse(body)) as Record<string, string>;
   if (url === "/api/account/sign-in" || url === "/api/account/sign-up") {
     if (sent.password !== FAKE_PASSWORD) {
@@ -109,10 +101,7 @@ function answerAccount(
     fakeAccount.username = (sent.username ?? "").toLowerCase();
     return json({ username: fakeAccount.username });
   }
-  if (
-    url === "/api/account/sign-out" ||
-    (method === "DELETE" && url === "/api/account")
-  ) {
+  if (url === "/api/account/sign-out" || (method === "DELETE" && url === "/api/account")) {
     fakeAccount.username = null;
     return Promise.resolve(new Response(null, { status: 204 }));
   }
@@ -171,14 +160,10 @@ export function stubServer(reply: Response) {
         offsetMs: 0,
         lastOpenedAt: Date.now(),
       };
-      return Promise.resolve(
-        new Response(JSON.stringify({ songs: [song] }), { status: 200 }),
-      );
+      return Promise.resolve(new Response(JSON.stringify({ songs: [song] }), { status: 200 }));
     }
     if (method === "GET" && url === "/api/recent-songs") {
-      return Promise.resolve(
-        new Response(JSON.stringify({ songs: [] }), { status: 200 }),
-      );
+      return Promise.resolve(new Response(JSON.stringify({ songs: [] }), { status: 200 }));
     }
     if (method === "POST" && url === "/api/song-versions") {
       return Promise.resolve(reply.clone());
@@ -205,9 +190,7 @@ export async function openSavedSong(reply: Response) {
   stubServer(reply);
   const user = userEvent.setup();
   render(<App />);
-  await user.click(
-    await screen.findByRole("button", { name: "Open 星の歌 by ミナト" }),
-  );
+  await user.click(await screen.findByRole("button", { name: "Open 星の歌 by ミナト" }));
   await screen.findByRole("table");
   return user;
 }

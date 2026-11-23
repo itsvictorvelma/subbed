@@ -3,12 +3,11 @@
 import { EyeIcon } from "../icons";
 import type { VersionColumn } from "../types";
 
-const COLUMN_BUTTONS: { column: VersionColumn; label: string; lang: string }[] =
-  [
-    { column: "hiragana", label: "かな", lang: "ja" },
-    { column: "romaji", label: "Romaji", lang: "en" },
-    { column: "english", label: "EN", lang: "en" },
-  ];
+const COLUMN_BUTTONS: { column: VersionColumn; label: string; lang: string }[] = [
+  { column: "hiragana", label: "かな", lang: "ja" },
+  { column: "romaji", label: "Romaji", lang: "en" },
+  { column: "english", label: "EN", lang: "en" },
+];
 
 interface PhoneTabsProps {
   value: VersionColumn;
@@ -18,11 +17,7 @@ interface PhoneTabsProps {
 // On a phone, which version shows next to the original. Hidden on wider screens by styles.css.
 export function PhoneTabs({ value, onChange }: PhoneTabsProps) {
   return (
-    <div
-      className="segmented phone-tabs"
-      role="group"
-      aria-label="Second column"
-    >
+    <div className="segmented phone-tabs" role="group" aria-label="Second column">
       {COLUMN_BUTTONS.map(({ column, label, lang }) => (
         <button
           key={column}
@@ -46,10 +41,7 @@ interface HideColumnTogglesProps {
 }
 
 // One toggle per version; a pressed one covers that column so the learner can test themselves.
-export function HideColumnToggles({
-  hidden,
-  onToggle,
-}: HideColumnTogglesProps) {
+export function HideColumnToggles({ hidden, onToggle }: HideColumnTogglesProps) {
   return (
     <div className="hide-toggles" role="group" aria-label="Hide columns">
       <span className="dim" aria-hidden="true">
@@ -82,11 +74,7 @@ interface PhoneHideButtonProps {
 
 // On a phone, one eye button covers or uncovers the column shown next to the original, using the
 // same hidden set as the Hide toggles.
-export function PhoneHideButton({
-  column,
-  hidden,
-  onToggle,
-}: PhoneHideButtonProps) {
+export function PhoneHideButton({ column, hidden, onToggle }: PhoneHideButtonProps) {
   const isHidden = hidden.has(column);
   return (
     <button

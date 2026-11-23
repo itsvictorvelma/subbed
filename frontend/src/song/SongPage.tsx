@@ -5,12 +5,7 @@ import { HideColumnToggles, PhoneHideButton, PhoneTabs } from "./ColumnButtons";
 import { OtherMatches } from "./OtherMatches";
 import { useFollowLine } from "./followLine";
 import { useHiddenColumns } from "./hiddenColumns";
-import {
-  currentLineIndex,
-  hasTimings,
-  LEAD_IN_MS,
-  loopRange,
-} from "../player/playback";
+import { currentLineIndex, hasTimings, LEAD_IN_MS, loopRange } from "../player/playback";
 import type { AudioClock } from "../player/playback";
 import { PlayerBar } from "../player/PlayerBar";
 import { SaveButton } from "./SaveButton";
@@ -18,14 +13,7 @@ import { ShortcutList } from "../shortcuts/ShortcutList";
 import { focusSearchBox } from "../search/SearchForm";
 import { SHORTCUT_LIST, useShortcuts } from "../shortcuts/shortcuts";
 import type { Shortcut } from "../shortcuts/shortcuts";
-import type {
-  Line,
-  Playback,
-  Progress,
-  SearchResult,
-  Song,
-  VersionColumn,
-} from "../types";
+import type { Line, Playback, Progress, SearchResult, Song, VersionColumn } from "../types";
 import { VersionsTable } from "./VersionsTable";
 import { BackIcon, FocusIcon } from "../icons";
 
@@ -35,14 +23,7 @@ export const NO_TIMINGS_TEXT = "No line timings for this song.";
 const POLL_MS = 200;
 const BACK_TO_LINE_TEXT = "Back to the current line";
 // Keys that scroll the lyrics when a line in them has focus; pressing one pauses following.
-const SCROLL_KEYS = new Set([
-  "ArrowUp",
-  "ArrowDown",
-  "PageUp",
-  "PageDown",
-  "Home",
-  "End",
-]);
+const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"]);
 const STOPPED: Progress = { timeMs: null, durationMs: null, playing: false };
 
 interface SongPageProps {
@@ -134,18 +115,12 @@ export function SongPage(props: SongPageProps) {
   const timedLines = lines.filter((line) => line.startMs !== null);
 
   function previousLine() {
-    const before = timedLines.filter(
-      (line) => currentLine !== null && line.index < currentLine,
-    );
+    const before = timedLines.filter((line) => currentLine !== null && line.index < currentLine);
     seekToLine(before.at(-1) ?? timedLines[0]);
   }
 
   function nextLine() {
-    seekToLine(
-      timedLines.find(
-        (line) => currentLine === null || line.index > currentLine,
-      ),
-    );
+    seekToLine(timedLines.find((line) => currentLine === null || line.index > currentLine));
   }
 
   function togglePlay() {
@@ -164,10 +139,7 @@ export function SongPage(props: SongPageProps) {
   }
 
   // Past the looped line's end, jump back to its start. Runs on each progress poll.
-  const loop =
-    loopLine === null
-      ? null
-      : loopRange(lines, loopLine, offsetMs, progress.durationMs);
+  const loop = loopLine === null ? null : loopRange(lines, loopLine, offsetMs, progress.durationMs);
   const loopStartMs = loop?.startMs ?? null;
   const loopEndMs = loop?.endMs ?? null;
   useEffect(() => {
@@ -242,12 +214,7 @@ export function SongPage(props: SongPageProps) {
         </div>
       ) : (
         <div className="song-head">
-          <button
-            type="button"
-            className="icon-button"
-            aria-label="Back"
-            onClick={goBack}
-          >
+          <button type="button" className="icon-button" aria-label="Back" onClick={goBack}>
             <BackIcon />
           </button>
           <div className="song-title-block">
@@ -269,11 +236,7 @@ export function SongPage(props: SongPageProps) {
           <HideColumnToggles hidden={hidden} onToggle={toggleColumn} />
           <div className="phone-only phone-columns">
             <PhoneTabs value={phoneColumn} onChange={setPhoneColumn} />
-            <PhoneHideButton
-              column={phoneColumn}
-              hidden={hidden}
-              onToggle={toggleColumn}
-            />
+            <PhoneHideButton column={phoneColumn} hidden={hidden} onToggle={toggleColumn} />
           </div>
           <SaveButton
             songId={song.id}
@@ -284,10 +247,7 @@ export function SongPage(props: SongPageProps) {
               props.onSavedChange(next);
             }}
           />
-          <OtherMatches
-            results={props.otherMatches}
-            onPick={props.onPickMatch}
-          />
+          <OtherMatches results={props.otherMatches} onPick={props.onPickMatch} />
           <button
             type="button"
             className="pill-button focus-button"
@@ -402,9 +362,5 @@ function readClock(player: AudioClock | null): Progress {
 }
 
 function sameProgress(a: Progress, b: Progress): boolean {
-  return (
-    a.timeMs === b.timeMs &&
-    a.durationMs === b.durationMs &&
-    a.playing === b.playing
-  );
+  return a.timeMs === b.timeMs && a.durationMs === b.durationMs && a.playing === b.playing;
 }

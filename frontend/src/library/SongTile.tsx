@@ -31,9 +31,7 @@ export function SongTile({ song, nowMs, onOpen, onRemove }: SongTileProps) {
           {song.track}
         </span>
         <span className="tile-meta">{song.artist}</span>
-        <span className="tile-meta">
-          {openedLabel(song.lastOpenedAt, nowMs)}
-        </span>
+        <span className="tile-meta">{openedLabel(song.lastOpenedAt, nowMs)}</span>
       </button>
       <button
         type="button"

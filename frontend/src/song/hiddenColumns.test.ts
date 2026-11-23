@@ -1,11 +1,7 @@
 // Checks that hidden columns are remembered on this browser and survive blocked storage.
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import {
-  cellKey,
-  storedHiddenColumns,
-  useHiddenColumns,
-} from "./hiddenColumns";
+import { cellKey, storedHiddenColumns, useHiddenColumns } from "./hiddenColumns";
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -22,16 +18,11 @@ test("AC-3: a hidden column is stored, and read back by the next page", () => {
   });
 
   expect([...storedHiddenColumns()]).toEqual(["romaji"]);
-  expect([
-    ...renderHook(() => useHiddenColumns()).result.current.hidden,
-  ]).toEqual(["romaji"]);
+  expect([...renderHook(() => useHiddenColumns()).result.current.hidden]).toEqual(["romaji"]);
 });
 
 test("an odd stored value hides nothing it does not know", () => {
-  window.localStorage.setItem(
-    "subbed-hidden-columns",
-    '["english", "original", 3]',
-  );
+  window.localStorage.setItem("subbed-hidden-columns", '["english", "original", 3]');
   expect([...storedHiddenColumns()]).toEqual(["english"]);
   window.localStorage.setItem("subbed-hidden-columns", "{not json");
   expect(storedHiddenColumns().size).toBe(0);

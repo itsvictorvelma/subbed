@@ -11,12 +11,7 @@ import {
 } from "./songTiles";
 
 // Invented songs only.
-function song(
-  id: number,
-  track: string,
-  artist: string,
-  lastOpenedAt: number,
-): SavedSong {
+function song(id: number, track: string, artist: string, lastOpenedAt: number): SavedSong {
   return {
     id,
     track,
@@ -30,9 +25,7 @@ function song(
 }
 
 test("AC-3: a thumbnail is built only from a valid video id", () => {
-  expect(thumbnailUrl("abcDEF12_-z")).toBe(
-    "https://i.ytimg.com/vi/abcDEF12_-z/mqdefault.jpg",
-  );
+  expect(thumbnailUrl("abcDEF12_-z")).toBe("https://i.ytimg.com/vi/abcDEF12_-z/mqdefault.jpg");
   expect(thumbnailUrl(null)).toBeNull();
   expect(thumbnailUrl("../../evil")).toBeNull();
   expect(thumbnailUrl("abcDEF12_-z/x")).toBeNull();
@@ -48,15 +41,9 @@ test("AC-3: a title always gets the same hue, and the first character is whole",
 
 test("opened labels count calendar days", () => {
   const now = new Date(2026, 10, 18, 9, 0).getTime();
-  expect(openedLabel(new Date(2026, 10, 18, 1, 0).getTime(), now)).toBe(
-    "Opened today",
-  );
-  expect(openedLabel(new Date(2026, 10, 17, 23, 0).getTime(), now)).toBe(
-    "Opened yesterday",
-  );
-  expect(openedLabel(new Date(2026, 10, 13, 12, 0).getTime(), now)).toBe(
-    "Opened 5 days ago",
-  );
+  expect(openedLabel(new Date(2026, 10, 18, 1, 0).getTime(), now)).toBe("Opened today");
+  expect(openedLabel(new Date(2026, 10, 17, 23, 0).getTime(), now)).toBe("Opened yesterday");
+  expect(openedLabel(new Date(2026, 10, 13, 12, 0).getTime(), now)).toBe("Opened 5 days ago");
 });
 
 test("AC-1: songs sort by recent, title, and artist", () => {
@@ -70,18 +57,11 @@ test("AC-1: songs sort by recent, title, and artist", () => {
   expect(sortSongs(songs, "title").map((s) => s.track)).toEqual(
     [...songs.map((s) => s.track)].sort((a, b) => a.localeCompare(b, "ja")),
   );
-  expect(sortSongs(songs, "artist").map((s) => s.artist)).toEqual([
-    "アオ",
-    "ミナト",
-    "ミナト",
-  ]);
+  expect(sortSongs(songs, "artist").map((s) => s.artist)).toEqual(["アオ", "ミナト", "ミナト"]);
 });
 
 test("spec 025 AC-6: the filter matches title or artist, ignoring letter case", () => {
-  const songs = [
-    song(1, "Star Road", "ミナト", 1),
-    song(2, "雨の夜", "Aoi", 2),
-  ];
+  const songs = [song(1, "Star Road", "ミナト", 1), song(2, "雨の夜", "Aoi", 2)];
   expect(filterSongs(songs, "star").map((s) => s.id)).toEqual([1]);
   expect(filterSongs(songs, " AOI ").map((s) => s.id)).toEqual([2]);
   expect(filterSongs(songs, "雨").map((s) => s.id)).toEqual([2]);

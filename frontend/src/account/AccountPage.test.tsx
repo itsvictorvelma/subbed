@@ -20,10 +20,7 @@ function mainNav() {
   return within(screen.getByRole("navigation", { name: "Main" }));
 }
 
-async function signIn(
-  user: ReturnType<typeof userEvent.setup>,
-  password = FAKE_PASSWORD,
-) {
+async function signIn(user: ReturnType<typeof userEvent.setup>, password = FAKE_PASSWORD) {
   await user.type(await screen.findByLabelText("Username"), "Mika");
   await user.type(screen.getByLabelText("Password"), password);
   await user.click(
@@ -52,9 +49,7 @@ test("AC-15: Save sends a guest to sign in, then back to the song, with their na
   expect(mainNav().getByRole("link", { name: "mika" })).toBeTruthy();
 
   await user.click(mainNav().getByRole("link", { name: "Your songs" }));
-  expect(
-    await screen.findByRole("button", { name: "Open 星の歌 by ミナト" }),
-  ).toBeTruthy();
+  expect(await screen.findByRole("button", { name: "Open 星の歌 by ミナト" })).toBeTruthy();
 });
 
 test("AC-15: a sign-in error shows as text and keeps the guest on the page", async () => {
@@ -76,16 +71,12 @@ test("AC-16: Sign out on /account returns to the guest home", async () => {
   const user = userEvent.setup();
   render(<App />);
 
-  expect((await screen.findByText(/Signed in as/)).textContent).toBe(
-    "Signed in as mika",
-  );
+  expect((await screen.findByText(/Signed in as/)).textContent).toBe("Signed in as mika");
   expect(document.title).toBe("Your account · Subbed");
   await user.click(screen.getByRole("button", { name: "Sign out" }));
 
   expect(window.location.pathname).toBe("/");
-  expect(
-    await screen.findByText("to save songs.", { exact: false }),
-  ).toBeTruthy();
+  expect(await screen.findByText("to save songs.", { exact: false })).toBeTruthy();
   expect(mainNav().getByRole("link", { name: "Sign in" })).toBeTruthy();
 });
 
@@ -95,18 +86,14 @@ test("AC-16: Delete account asks for the password, then returns to the guest hom
   const user = userEvent.setup();
   render(<App />);
 
-  await user.click(
-    await screen.findByRole("button", { name: "Delete account" }),
-  );
+  await user.click(await screen.findByRole("button", { name: "Delete account" }));
   await user.type(screen.getByLabelText("Password"), FAKE_PASSWORD);
   await user.click(screen.getByRole("button", { name: "Delete my account" }));
 
   const deleteCall = fakeFetch.mock.calls.find(
     ([url, init]) => url === "/api/account" && init?.method === "DELETE",
   );
-  expect(deleteCall?.[1]?.body).toBe(
-    JSON.stringify({ password: FAKE_PASSWORD }),
-  );
+  expect(deleteCall?.[1]?.body).toBe(JSON.stringify({ password: FAKE_PASSWORD }));
   expect(window.location.pathname).toBe("/");
   expect(mainNav().getByRole("link", { name: "Sign in" })).toBeTruthy();
 });

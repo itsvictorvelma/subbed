@@ -108,9 +108,7 @@ export function PlayerControls(props: PlayerControlsProps) {
           onClick={props.onToggleMute}
         >
           <VolumeIcon muted={props.volume === 0} />
-          <span className="phone-only tile-label">
-            {props.volume > 0 ? "Mute" : "Unmute"}
-          </span>
+          <span className="phone-only tile-label">{props.volume > 0 ? "Mute" : "Unmute"}</span>
         </button>
         <label htmlFor="volume" className="visually-hidden">
           Volume

@@ -1,19 +1,9 @@
 // Every icon on the page: small line drawings in the text colour, hidden from screen readers.
 import type { ReactNode } from "react";
 
-function Icon({
-  filled = false,
-  children,
-}: {
-  filled?: boolean;
-  children: ReactNode;
-}) {
+function Icon({ filled = false, children }: { filled?: boolean; children: ReactNode }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={filled ? "icon icon-filled" : "icon"}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 24 24" className={filled ? "icon icon-filled" : "icon"} aria-hidden="true">
       {children}
     </svg>
   );

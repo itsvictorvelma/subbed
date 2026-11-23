@@ -30,9 +30,7 @@ export function SaveButton(props: SaveButtonProps) {
     }
     setBusy(true);
     setFailed(false);
-    const result = saved
-      ? await unsaveSong(songId)
-      : await saveSong(songId, playback);
+    const result = saved ? await unsaveSong(songId) : await saveSong(songId, playback);
     setBusy(false);
     if (result.kind === "ok") {
       onSavedChange(!saved);
@@ -45,9 +43,7 @@ export function SaveButton(props: SaveButtonProps) {
     <>
       <button
         type="button"
-        className={
-          saved ? "pill-button save-button is-saved" : "pill-button save-button"
-        }
+        className={saved ? "pill-button save-button is-saved" : "pill-button save-button"}
         aria-pressed={saved}
         disabled={busy}
         onClick={() => {

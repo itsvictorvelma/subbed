@@ -24,12 +24,9 @@ export function OtherMatches({ results, onPick }: OtherMatchesProps) {
                 onPick(result);
               }}
             >
-              {result.track} — {result.artist},{" "}
-              {formatClock(result.durationSeconds * 1000)}
+              {result.track} — {result.artist}, {formatClock(result.durationSeconds * 1000)}
             </button>
-            {result.looksJapanese ? null : (
-              <span className="dim"> Not Japanese</span>
-            )}
+            {result.looksJapanese ? null : <span className="dim"> Not Japanese</span>}
             {result.saved ? <span className="dim"> Saved</span> : null}
           </li>
         ))}

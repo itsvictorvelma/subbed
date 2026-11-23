@@ -20,12 +20,7 @@ export function SongArt({ track, videoId, children }: SongArtProps) {
           {firstCharacter(track)}
         </span>
       ) : (
-        <img
-          src={thumbnail}
-          alt=""
-          loading="lazy"
-          referrerPolicy="no-referrer"
-        />
+        <img src={thumbnail} alt="" loading="lazy" referrerPolicy="no-referrer" />
       )}
       {children}
     </span>

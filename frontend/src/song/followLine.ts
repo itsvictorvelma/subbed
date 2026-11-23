@@ -9,21 +9,13 @@ const STEADY_AT = 0.35;
 export const GLIDE_MS = 450;
 
 // The scroll position that puts a row starting at `rowTop` 35% down the view, within what scrolls.
-export function scrollTarget(
-  rowTop: number,
-  viewHeight: number,
-  maxScroll: number,
-): number {
+export function scrollTarget(rowTop: number, viewHeight: number, maxScroll: number): number {
   const target = rowTop - viewHeight * STEADY_AT;
   return Math.round(Math.min(Math.max(target, 0), Math.max(maxScroll, 0)));
 }
 
 // Where a glide from `from` to `to` is after `elapsedMs`: fast at first, then settling (ease-out).
-export function glidePosition(
-  from: number,
-  to: number,
-  elapsedMs: number,
-): number {
+export function glidePosition(from: number, to: number, elapsedMs: number): number {
   const progress = Math.min(Math.max(elapsedMs / GLIDE_MS, 0), 1);
   const eased = 1 - (1 - progress) ** 3;
   return from + (to - from) * eased;
@@ -47,13 +39,8 @@ export function useFollowLine(
       return;
     }
     const viewBox = view.getBoundingClientRect();
-    const rowTop =
-      row.getBoundingClientRect().top - viewBox.top + view.scrollTop;
-    const target = scrollTarget(
-      rowTop,
-      view.clientHeight,
-      view.scrollHeight - view.clientHeight,
-    );
+    const rowTop = row.getBoundingClientRect().top - viewBox.top + view.scrollTop;
+    const target = scrollTarget(rowTop, view.clientHeight, view.scrollHeight - view.clientHeight);
     if (prefersReducedMotion()) {
       view.scrollTo({ top: target, behavior: "instant" });
       return;

@@ -1,11 +1,5 @@
 // Checks the song page's study tools: hiding a column, looping a line, and keyboard shortcuts (spec 015).
-import {
-  cleanup,
-  fireEvent,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { cleanup, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, expect, test } from "vitest";
 import {
   fakePlayer,
@@ -42,9 +36,7 @@ async function openWhileSinging() {
   fakePlayer.seconds = 5;
   const user = await openSavedSong(songReply(LINES, VIDEO_ID));
   await waitFor(() => {
-    expect(document.querySelector("tr.current")?.textContent).toContain(
-      "風が歌う",
-    );
+    expect(document.querySelector("tr.current")?.textContent).toContain("風が歌う");
   });
   return user;
 }
@@ -57,9 +49,7 @@ test("AC-1: hiding Romaji covers every romaji cell and takes the text off the pa
 
   expect(hideToggle("Romaji").getAttribute("aria-pressed")).toBe("true");
   expect(shownRomaji()).toBe(0);
-  expect(
-    screen.getByRole("button", { name: "Show romaji for: 星の道" }),
-  ).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Show romaji for: 星の道" })).toBeTruthy();
 
   await user.click(hideToggle("Romaji"));
   expect(shownRomaji()).toBe(3);
@@ -69,14 +59,10 @@ test("AC-2: clicking one covered cell reveals only that cell", async () => {
   const user = await openSavedSong(songReply(LINES));
   await user.click(hideToggle("Romaji"));
 
-  await user.click(
-    screen.getByRole("button", { name: "Show romaji for: 風が歌う" }),
-  );
+  await user.click(screen.getByRole("button", { name: "Show romaji for: 風が歌う" }));
 
   expect(shownRomaji()).toBe(1);
-  expect(screen.getAllByRole("button", { name: /^Show romaji/ })).toHaveLength(
-    2,
-  );
+  expect(screen.getAllByRole("button", { name: /^Show romaji/ })).toHaveLength(2);
 });
 
 test("AC-3: hidden columns are still hidden when the song is opened again", async () => {
@@ -116,11 +102,9 @@ test("AC-5: Next line moves the loop; dragging the slider turns it off", async (
     target: { value: "30000" },
   });
   expect(loopedRow()).toBeUndefined();
-  expect(
-    screen
-      .getByRole("button", { name: "Loop line" })
-      .getAttribute("aria-pressed"),
-  ).toBe("false");
+  expect(screen.getByRole("button", { name: "Loop line" }).getAttribute("aria-pressed")).toBe(
+    "false",
+  );
 });
 
 test("while looping, the lead-in to the next line does not move the sung line, so Next line goes one line on", async () => {
@@ -132,9 +116,7 @@ test("while looping, the lead-in to the next line does not move the sung line, s
   await waitFor(() => {
     expect(screen.getByText("0:08")).toBeTruthy();
   });
-  expect(document.querySelector("tr.current")?.textContent).toContain(
-    "風が歌う",
-  );
+  expect(document.querySelector("tr.current")?.textContent).toContain("風が歌う");
   await user.click(screen.getByRole("button", { name: "Next line" }));
 
   expect(loopedRow()).toContain("夜の月");
@@ -177,32 +159,23 @@ test("AC-7: each shortcut does what the list says", async () => {
   expect(screen.getByRole("button", { name: "Focus" })).toBeTruthy();
 
   await user.keyboard("?");
-  expect(
-    screen.getByRole("dialog", { name: SHORTCUT_LIST_TITLE }),
-  ).toBeTruthy();
+  expect(screen.getByRole("dialog", { name: SHORTCUT_LIST_TITLE })).toBeTruthy();
   await user.keyboard("?");
   expect(screen.queryByRole("dialog")).toBeNull();
 
   // Spec 021 AC-8: / jumps to the header's search box.
   await user.keyboard("/");
-  expect(document.activeElement).toBe(
-    screen.getByLabelText("Song name or artist"),
-  );
+  expect(document.activeElement).toBe(screen.getByLabelText("Song name or artist"));
 });
 
 test("AC-8: typing in the search box or the YouTube link field, or holding Ctrl, triggers nothing", async () => {
   const user = await openSavedSong(songReply(LINES));
 
-  const pressed = (label: string) =>
-    hideToggle(label).getAttribute("aria-pressed");
+  const pressed = (label: string) => hideToggle(label).getAttribute("aria-pressed");
 
   await user.type(screen.getByLabelText("Song name or artist"), "fhre l");
   expect(screen.getByRole("search")).toBeTruthy();
-  expect([pressed("かな"), pressed("Romaji"), pressed("EN")]).toEqual([
-    "false",
-    "false",
-    "false",
-  ]);
+  expect([pressed("かな"), pressed("Romaji"), pressed("EN")]).toEqual(["false", "false", "false"]);
 
   await user.type(screen.getByLabelText("YouTube link"), "r");
   expect(pressed("Romaji")).toBe("false");

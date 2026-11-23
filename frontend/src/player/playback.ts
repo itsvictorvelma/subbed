@@ -35,11 +35,7 @@ export function parseVideoId(link: string): string | null {
 export const LEAD_IN_MS = 300;
 
 // The index of the line being sung: the last line whose start plus the offset has passed.
-export function currentLineIndex(
-  lines: Line[],
-  timeMs: number,
-  offsetMs: number,
-): number | null {
+export function currentLineIndex(lines: Line[], timeMs: number, offsetMs: number): number | null {
   let current: number | null = null;
   for (const line of lines) {
     if (line.startMs !== null && line.startMs + offsetMs <= timeMs) {
@@ -119,9 +115,7 @@ export function loopRange(
   if (line?.startMs === null || line?.startMs === undefined) {
     return null;
   }
-  const next = lines.find(
-    (candidate) => candidate.index > lineIndex && candidate.startMs !== null,
-  );
+  const next = lines.find((candidate) => candidate.index > lineIndex && candidate.startMs !== null);
   const endMs =
     next?.startMs !== null && next?.startMs !== undefined
       ? next.startMs + offsetMs
