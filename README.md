@@ -10,10 +10,10 @@
 </p>
 
 <p align="center">
-  <a href="docs/demo/subbed-demo.mp4"><img src="docs/demo/preview.gif" alt="Searching for a song: kana rain while it loads, then the lyrics in four columns, the sung line lighting up, and the romaji column hidden for self-testing" width="880"></a>
+  <a href="docs/demo/subbed-demo.mp4"><img src="docs/demo/preview.gif" alt="Searching for a song: kana rain while it loads, then the lyrics in four columns, a video link pasted, and the sung line lighting up as it plays" width="880"></a>
 </p>
 
-<p align="center"><sub>The song shown is invented. Click the preview for a longer walkthrough with sound (recorded on an earlier build).</sub></p>
+<p align="center"><sub>The song shown is invented. Click the preview for the full walkthrough: jumping to a line, hiding a column, and Focus mode.</sub></p>
 
 ---
 
