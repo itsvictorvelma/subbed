@@ -279,4 +279,4 @@ Every change starts as a short spec in [`specs/`](specs/), is built with a test 
 
 - Lyrics and line timings from [LRCLIB](https://lrclib.net), a free, community-run lyrics database.
 - Readings and translations by [Groq](https://groq.com) and [Google Gemini](https://ai.google.dev).
-- Built by Victor Velma.
+- Built by Victor Velma at Perspectif Inc.

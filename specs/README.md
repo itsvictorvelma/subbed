@@ -45,6 +45,7 @@ Numbers are permanent ids, never reused, because commits and PRs refer to them. 
 | 030 | Go live on subbed.ca: server setup, Cloudflare proxy, www redirect, nightly backups | done |
 | 031 | Dev server with `uv run fastapi dev` (a small change merged without a spec file) | done |
 | 032 | Final tidy: database set up once with WAL; a smaller, hook-based frontend; CSS partials | done |
+| 033 | Credit Perspectif Inc. in the home footer and README (a small change merged without a spec file) | done |
 | — | Next language | decided after 008 is in use |
 
 ## Ideas carried from the shelved specs
