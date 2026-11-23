@@ -54,7 +54,8 @@ export function SaveButton(props: SaveButtonProps) {
           void toggle();
         }}
       >
-        <BookmarkIcon filled={saved} /> {saved ? "Saved" : "Save"}
+        <BookmarkIcon filled={saved} />{" "}
+        <span className="save-label">{saved ? "Saved" : "Save"}</span>
       </button>
       {failed && (
         <span role="alert" className="error save-error">

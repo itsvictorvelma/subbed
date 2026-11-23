@@ -45,7 +45,7 @@ export function PlayerControls(props: PlayerControlsProps) {
       <div className="transport">
         <button
           type="button"
-          className="icon-button"
+          className="icon-button previous-line-button"
           aria-label="Previous line"
           disabled={!hasTimings}
           onClick={props.onPreviousLine}
@@ -62,7 +62,7 @@ export function PlayerControls(props: PlayerControlsProps) {
         </button>
         <button
           type="button"
-          className="icon-button"
+          className="icon-button next-line-button"
           aria-label="Next line"
           disabled={!hasTimings}
           onClick={props.onNextLine}
@@ -71,13 +71,14 @@ export function PlayerControls(props: PlayerControlsProps) {
         </button>
         <button
           type="button"
-          className="icon-button"
+          className="icon-button loop-button"
           aria-label="Loop line"
           aria-pressed={props.looping}
           disabled={!props.canLoop}
           onClick={props.onToggleLoop}
         >
           <LoopIcon />
+          <span className="phone-only tile-label">Loop</span>
         </button>
       </div>
       <div className="position">
@@ -107,6 +108,9 @@ export function PlayerControls(props: PlayerControlsProps) {
           onClick={props.onToggleMute}
         >
           <VolumeIcon muted={props.volume === 0} />
+          <span className="phone-only tile-label">
+            {props.volume > 0 ? "Mute" : "Unmute"}
+          </span>
         </button>
         <label htmlFor="volume" className="visually-hidden">
           Volume
@@ -158,12 +162,13 @@ export function PlayerControls(props: PlayerControlsProps) {
       {props.hasVideo && (
         <button
           type="button"
-          className="icon-button"
+          className="icon-button video-toggle"
           aria-label="Show video"
           aria-pressed={props.videoShown}
           onClick={props.onToggleVideo}
         >
           <VideoIcon />
+          <span className="phone-only tile-label">Video</span>
         </button>
       )}
     </>

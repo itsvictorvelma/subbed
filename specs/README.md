@@ -41,6 +41,7 @@ Numbers are permanent ids, never reused, because commits and PRs refer to them. 
 | 027 | Tidy the codebase: feature folders, one source per shared thing; README rewrite | done |
 | 020 | Deployment: Docker and Caddy on a server, settings from the environment | approved |
 | 028 | Rename to Subbed: new name, 字幕 mark, icons, settings, package | approved |
+| 029 | Phone polish: mini player and sheet, one-row header, roomier lyrics, iPhone fixes | approved |
 | — | Next language | decided after 008 is in use |
 
 ## Ideas carried from the shelved specs

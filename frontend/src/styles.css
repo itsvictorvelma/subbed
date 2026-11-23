@@ -267,7 +267,9 @@ button:disabled {
   width: 100%;
   max-width: 78rem;
   margin: 0 auto;
-  padding: 2.5rem 2rem 4rem;
+  padding: 2.5rem max(2rem, env(safe-area-inset-right))
+    calc(4rem + env(safe-area-inset-bottom))
+    max(2rem, env(safe-area-inset-left));
   animation: fade-up 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
@@ -276,7 +278,8 @@ button:disabled {
   width: 100%;
   max-width: 78rem;
   margin: 1rem auto 0;
-  padding: 0 2rem;
+  padding: 0 max(2rem, env(safe-area-inset-right)) 0
+    max(2rem, env(safe-area-inset-left));
 }
 
 /* Header */
@@ -286,7 +289,9 @@ button:disabled {
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem 1.5rem;
-  padding: 0.75rem 2rem;
+  /* env() insets are 0 except on notched screens, e.g. an iPhone in landscape on this layout. */
+  padding: 0.75rem max(2rem, env(safe-area-inset-right)) 0.75rem
+    max(2rem, env(safe-area-inset-left));
   border-bottom: 1px solid var(--line);
 }
 
@@ -535,7 +540,8 @@ button:disabled {
   width: 100%;
   max-width: 78rem;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 max(2rem, env(safe-area-inset-right)) 0
+    max(2rem, env(safe-area-inset-left));
 }
 
 .home h2 {
@@ -863,7 +869,7 @@ button:disabled {
   position: fixed;
   z-index: 20;
   right: 0;
-  bottom: 1.5rem;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom));
   left: 0;
   display: flex;
   align-items: center;
@@ -1023,7 +1029,8 @@ button:disabled {
   width: 100%;
   max-width: 78rem;
   margin: 0 auto;
-  padding: 0.75rem 2rem 0.5rem;
+  padding: 0.75rem max(2rem, env(safe-area-inset-right)) 0.5rem
+    max(2rem, env(safe-area-inset-left));
 }
 
 .song-title-block {
@@ -1133,7 +1140,8 @@ button:disabled {
 .lyrics-scroll {
   flex: 1 1 0;
   min-height: 0;
-  padding: 1rem 2rem 14rem;
+  padding: 1rem max(2rem, env(safe-area-inset-right)) 14rem
+    max(2rem, env(safe-area-inset-left));
   overflow-y: auto;
   scroll-behavior: smooth;
   mask-image: linear-gradient(
@@ -1334,7 +1342,7 @@ button:disabled {
 .shortcut-list {
   position: fixed;
   z-index: 5;
-  right: 2rem;
+  right: max(2rem, env(safe-area-inset-right));
   bottom: 6rem;
   width: min(22rem, calc(100vw - 2rem));
   padding: 0.75rem 1rem 1rem;
@@ -1414,7 +1422,9 @@ button:disabled {
 .player-bar {
   position: relative;
   /* Equal room on both sides for the pinned shortcuts button, so the row stays centered. */
-  padding: 0.75rem 4rem;
+  padding: 0.75rem max(4rem, env(safe-area-inset-right))
+    calc(0.75rem + env(safe-area-inset-bottom))
+    max(4rem, env(safe-area-inset-left));
   background: var(--surface);
   border-top: 1px solid var(--line);
 }
@@ -1457,7 +1467,7 @@ button:disabled {
 .shortcuts-button {
   position: absolute;
   top: 50%;
-  right: 1.25rem;
+  right: max(1.25rem, env(safe-area-inset-right));
   transform: translateY(-50%);
 }
 
@@ -1524,7 +1534,7 @@ button:disabled {
 /* The video plays in a small window above the bar, at the right. */
 .video-window {
   position: absolute;
-  right: 2rem;
+  right: max(2rem, env(safe-area-inset-right));
   bottom: calc(100% + 1rem);
   width: 17rem;
   overflow: hidden;
@@ -1566,12 +1576,57 @@ button:disabled {
 /* Phone */
 
 @media (max-width: 719px) {
+  /* The page clears the iPhone notch in landscape and the home bar at the bottom. */
   .page {
-    padding: 1.5rem 1rem 3rem;
+    padding: 1.5rem max(1rem, env(safe-area-inset-right))
+      calc(3rem + env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
   }
 
+  /* Header (spec 029): one row; the links become 44 pt icons and search opens from its icon. */
   .site-header {
-    padding: 0.5rem 1rem;
+    gap: 0.25rem 0.5rem;
+    padding: 0.375rem max(0.5rem, env(safe-area-inset-right)) 0.375rem
+      max(1rem, env(safe-area-inset-left));
+  }
+
+  .wordmark {
+    padding: 0.375rem 0.25rem;
+  }
+
+  .site-nav {
+    gap: 0;
+  }
+
+  .search-toggle.phone-only {
+    display: inline-flex;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+  }
+
+  .nav-link.nav-home {
+    display: none;
+  }
+
+  .nav-icon.phone-only {
+    display: inline-flex;
+  }
+
+  .nav-label,
+  .save-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .search-form {
@@ -1580,13 +1635,61 @@ button:disabled {
     max-width: none;
   }
 
-  .home {
-    padding: 0 1rem;
+  .site-header:not(.is-searching) .search-form {
+    display: none;
   }
 
+  /* 16 px text boxes, so iPhone Safari does not zoom in when one is tapped. */
+  .search-box input,
+  .library-filter input,
+  .account-form input {
+    font-size: 1rem;
+  }
+
+  /* Every control at least 44 pt tall; the input fills its box, so a tap anywhere in it types. */
+  .search-box {
+    height: 3rem;
+  }
+
+  .search-box input {
+    align-self: stretch;
+  }
+
+  .find-button,
+  .link-form .find-button {
+    height: 2.75rem;
+  }
+
+  .pill-button,
+  .segmented button {
+    min-height: 2.75rem;
+  }
+
+  .keyboard-hint,
+  .shortcuts-button,
+  .shortcut-list {
+    display: none;
+  }
+
+  .home {
+    padding: 0 max(1rem, env(safe-area-inset-right)) 0
+      max(1rem, env(safe-area-inset-left));
+  }
+
+  /* The four example words fit on one or two lines. */
+  .hero-parts {
+    gap: 0.75rem;
+  }
+
+  .hero-original {
+    font-size: 1.625rem;
+  }
+
+  /* scroll-padding keeps the first tile off the screen edge when the row snaps. */
   .recent-row {
     margin: 0 -1rem;
     padding: 0.5rem 1rem;
+    scroll-padding-inline: 1rem;
   }
 
   .home-hint {
@@ -1600,11 +1703,50 @@ button:disabled {
 
   .song-head,
   .focus-strip {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem max(1rem, env(safe-area-inset-right)) 0.5rem
+      max(1rem, env(safe-area-inset-left));
+  }
+
+  /* Song head (spec 029): back, a one-line title, round Save; then the column picker and eye. */
+  .song-head {
+    gap: 0.5rem;
+  }
+
+  .song-head > .icon-button:first-child {
+    margin-left: -0.75rem;
+  }
+
+  .song-title-block {
+    flex: 1 1 0;
   }
 
   .song-title-block h1 {
-    font-size: 1.375rem;
+    overflow: hidden;
+    font-size: 1.1875rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .song-head .hide-toggles {
+    display: none;
+  }
+
+  .save-button {
+    justify-content: center;
+    width: 2.75rem;
+    padding: 0;
+  }
+
+  .other-matches {
+    order: 6;
+  }
+
+  .phone-columns.phone-only {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    order: 5;
   }
 
   .phone-tabs {
@@ -1614,13 +1756,19 @@ button:disabled {
     order: 5;
   }
 
-  .hide-toggles {
-    order: 6;
+  .phone-columns .phone-tabs {
+    flex: 1 1 auto;
+    order: 0;
   }
 
-  .shortcut-list {
-    right: 1rem;
-    bottom: 8rem;
+  .phone-hide-button {
+    flex: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  .hide-toggles {
+    order: 6;
   }
 
   .focus-button {
@@ -1628,7 +1776,19 @@ button:disabled {
   }
 
   .lyrics-scroll {
-    padding: 0.5rem 0.75rem 8rem;
+    padding: 0.5rem max(0.75rem, env(safe-area-inset-right)) 3rem
+      max(0.75rem, env(safe-area-inset-left));
+  }
+
+  /* A taller tap area for each line, without moving the text. */
+  .seek-button {
+    position: relative;
+  }
+
+  .seek-button::after {
+    position: absolute;
+    inset: -0.625rem 0;
+    content: "";
   }
 
   .versions-table th {
@@ -1665,58 +1825,283 @@ button:disabled {
     display: none;
   }
 
-  /* Two rows under the slider: transport and video, then sync and Change audio. */
+  /* Player (spec 029), collapsed: play, the sung line and time, previous, next, and open. */
   .player-bar {
-    padding: 0.5rem 1rem 0.75rem;
+    padding: 0.375rem max(0.5rem, env(safe-area-inset-right))
+      calc(0.375rem + env(safe-area-inset-bottom))
+      max(0.75rem, env(safe-area-inset-left));
   }
 
   .player-row {
-    gap: 0.375rem 0.5rem;
-  }
-
-  .position {
-    order: -1;
-    flex-basis: 100%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 0.25rem;
   }
 
   .transport {
-    flex: 1;
+    display: contents;
   }
 
-  .sync {
-    order: 2;
+  .player-bar:not(.is-open)
+    :is(
+      .position,
+      .volume,
+      .speed-button,
+      .sync,
+      .video-toggle,
+      .change-audio,
+      .loop-button,
+      .audio-chooser
+    ) {
+    display: none;
+  }
+
+  .player-bar .play-button {
+    flex: none;
+    order: -2;
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .mini-line.phone-only {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    order: -1;
+    min-width: 0;
+    min-height: 3rem;
+    padding: 0 0.5rem;
+    text-align: left;
+    color: var(--text);
+    background: none;
+    border: 0;
+  }
+
+  .mini-line-text {
+    overflow: hidden;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mini-line-time {
+    font-size: 0.75rem;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sheet-open-button.phone-only {
+    display: inline-flex;
+    order: 1;
+  }
+
+  .play-along-button.phone-only {
+    display: inline-flex;
+    flex: 1 1 auto;
+    justify-content: center;
+    min-height: 3rem;
+  }
+
+  /* Open: the bar becomes a sheet over the lyrics, dimmed with the dark theme's shadow black. */
+  .sheet-backdrop.phone-only {
+    position: fixed;
+    z-index: 30;
+    inset: 0;
+    display: block;
+    padding: 0;
+    background: rgb(0 0 0 / 50%);
+    border: 0;
+  }
+
+  .player-bar.is-open {
+    position: fixed;
+    z-index: 31;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 88dvh;
+    overflow-y: auto;
+    padding: 0 max(1.25rem, env(safe-area-inset-right))
+      calc(1.25rem + env(safe-area-inset-bottom))
+      max(1.25rem, env(safe-area-inset-left));
+    border-radius: 24px 24px 0 0;
+    box-shadow: var(--shadow);
+    animation: sheet-up 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .sheet-handle.phone-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 2.75rem;
+    margin: 0 auto;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 999px;
+  }
+
+  .sheet-handle span {
+    width: 2.5rem;
+    height: 5px;
+    background: var(--dim);
+    border-radius: 3px;
+    opacity: 0.5;
+  }
+
+  .player-bar.is-open .player-row {
+    display: grid;
+    grid-template-areas:
+      "position position position position position position"
+      "prev prev play play next next"
+      "loop loop speed speed volume volume"
+      "sync sync sync sync sync sync"
+      "video video video change change change";
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.75rem 0.5rem;
+  }
+
+  /* Choosing audio in the sheet: the chooser, full width, then Back to player. */
+  .player-bar.is-open .player-row:has(.audio-chooser) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .is-open .audio-chooser {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .is-open .audio-chooser > * {
+    box-sizing: border-box;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .is-open :is(.mini-line, .sheet-open-button, .play-along-button) {
+    display: none;
+  }
+
+  .is-open .position {
+    display: grid;
+    grid-area: position;
+    grid-template-columns: 1fr auto;
+    gap: 0 0.75rem;
+  }
+
+  .is-open .position input {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    height: 2.75rem;
+  }
+
+  .is-open .position span:last-child {
+    justify-self: end;
+  }
+
+  .is-open .previous-line-button {
+    grid-area: prev;
+    justify-self: end;
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .is-open .play-button {
+    grid-area: play;
+    justify-self: center;
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
+  .is-open .next-line-button {
+    grid-area: next;
+    justify-self: start;
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .is-open .loop-button {
+    grid-area: loop;
+  }
+
+  .is-open .speed-button {
+    grid-area: speed;
+  }
+
+  .is-open .volume {
+    display: flex;
+    grid-area: volume;
+  }
+
+  .is-open .video-toggle {
+    grid-area: video;
+  }
+
+  .is-open .change-audio {
+    grid-area: change;
+  }
+
+  .is-open .player-row:not(:has(.video-toggle)) .change-audio {
+    grid-column: 1 / -1;
+  }
+
+  /* Loop, Speed, Mute, Video, and Change audio as equal tiles with their names shown. */
+  .is-open
+    :is(
+      .loop-button,
+      .speed-button,
+      .volume .icon-button,
+      .video-toggle,
+      .change-audio
+    ) {
+    box-sizing: border-box;
+    gap: 0.5rem;
+    justify-content: center;
+    width: 100%;
+    height: 3rem;
+    min-height: 3rem;
+    font-size: 0.875rem;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: none;
+  }
+
+  .is-open :is(.loop-button, .video-toggle)[aria-pressed="true"] {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+
+  .is-open .tile-label.phone-only {
+    display: inline;
+  }
+
+  .is-open .sync {
+    grid-area: sync;
+    padding: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .is-open .sync span {
+    flex: 1 1 auto;
   }
 
   .link-form {
     flex-basis: 100%;
     max-width: none;
+    height: 3rem;
   }
 
   /* Phones set loudness with their own buttons; only Mute stays. */
   .volume input {
     display: none;
-  }
-
-  .player-row .pill-button {
-    min-height: 2rem;
-    padding: 0 0.75rem;
-    font-size: 0.8125rem;
-  }
-
-  .sync span {
-    min-width: 5rem;
-  }
-
-  .change-audio {
-    order: 3;
-    margin-left: auto;
-  }
-
-  /* On a phone the shortcuts button joins the row again, after Change audio. */
-  .shortcuts-button {
-    position: static;
-    order: 4;
-    transform: none;
   }
 
   /* On a phone the video sits in the bar, above the controls, so it never covers the lyrics. */
@@ -1725,8 +2110,7 @@ button:disabled {
     right: auto;
     bottom: auto;
     width: 100%;
-    max-width: 22rem;
-    margin: 0 auto 0.625rem;
+    margin: 0 0 0.625rem;
   }
 }
 
@@ -1740,6 +2124,16 @@ button:disabled {
 
   to {
     opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
     transform: none;
   }
 }
@@ -1825,4 +2219,10 @@ button:disabled {
 
 .library-sign-in {
   margin-top: 1.5rem;
+}
+
+/* Phone-only elements (spec 029): hidden here, after every base rule; the phone block shows each one
+   with a more specific selector that pairs its own class with this one. */
+.phone-only {
+  display: none;
 }
