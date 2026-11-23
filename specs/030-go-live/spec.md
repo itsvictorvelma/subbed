@@ -9,13 +9,6 @@ Builds on spec 020 (Docker and Caddy) and 028 (the Subbed name). -->
 
 Subbed is live at `https://subbed.ca` on the user's droplet, behind Cloudflare's proxy (orange cloud), survives a reboot, and backs up its database every night. The main session sets the server up over `ssh droplet` and shows every command it runs.
 
-## What is known (checked read-only on 2026-11-22)
-
-- Droplet `143.110.223.217`: Ubuntu 24.04, 1 vCPU, 2 GB memory, 48 GB disk, no swap, no Docker, firewall off.
-- SSH: key only (password login already off), root login with the key. Automatic security updates already on.
-- DNS: `subbed.ca` is on Cloudflare; `A` records for `subbed.ca` and `www` → the droplet, DNS only (added by the user the same day).
-- Repo: `github.com/itsvictorvelma/subbed` (public), so the server clones over HTTPS with no key.
-
 ## In scope
 
 Repo changes (one small PR)
@@ -30,7 +23,7 @@ Server setup (run by the main session, after the PR is merged)
 2. 1 GB swap file (headroom for the page build on 2 GB).
 3. Docker Engine and Compose from Docker's own install script.
 4. Firewall (`ufw`): allow OpenSSH, 80/tcp, 443/tcp, 443/udp; deny the rest; enable.
-5. SSH: `PermitRootLogin prohibit-password` (key only, stated outright).
+5. SSH hardened (key only).
 6. `git clone` the repo to `/root/subbed`.
 7. `.env`: copied from the user's Mac with `scp` (the keys are never printed or read into the chat), then `SUBBED_DOMAIN=subbed.ca` set, `chmod 600`.
 8. `scripts/deploy.sh`.
@@ -38,7 +31,7 @@ Server setup (run by the main session, after the PR is merged)
 10. Cron: `scripts/backup.sh` every night at 03:30 server time.
 
 Cloudflare and the firewall (in this order)
-1. Now (user): two `A` records, **DNS only (grey cloud)** for the moment: `subbed.ca` and `www`, both → `143.110.223.217`. No `AAAA` records (Cloudflare serves IPv6 to visitors itself once proxied).
+1. Now (user): two `A` records, **DNS only (grey cloud)** for the moment: `subbed.ca` and `www`, both → `the droplet`. No `AAAA` records (Cloudflare serves IPv6 to visitors itself once proxied).
 2. User: SSL/TLS mode **Full (strict)** (never Flexible: it loops with Caddy's HTTP→HTTPS redirect). "Always Use HTTPS" may stay on.
 3. After the first deploy shows a valid Let's Encrypt certificate (AC-3 on grey): the user switches both records to **Proxied**.
 4. After AC-3 passes again through the proxy: the user adds a DigitalOcean Cloud Firewall (free, in the panel) on the droplet: inbound 22 from anywhere, 80 and 443 (TCP) only from Cloudflare's ranges. The main session gives the exact list. This stops anyone skipping Cloudflare by using the IP.
@@ -47,7 +40,6 @@ Cloudflare and the firewall (in this order)
 
 - Feature or page changes; CI/CD; monitoring or alerting; email.
 - Cloudflare rules beyond the defaults (WAF rules, rate limiting, Bot Fight Mode settings). Their defaults stay.
-- A non-root login user (on a one-app box behind a key it adds steps without real gain; revisit if others get access).
 - Backups off the server (DigitalOcean's paid weekly backups are an option the user can switch on in the panel).
 
 ## Rules
@@ -80,7 +72,7 @@ Cloudflare and the firewall (in this order)
 - AC-2: The Caddyfile is valid (`caddy validate` in the local compose run), redirects `www.` to the bare domain, and with a request from a trusted range carrying `CF-Connecting-IP` the app logs that IP; from an untrusted sender the header is ignored (local compose run with a test range).
 - AC-3 (server): On grey, `https://subbed.ca` loads with a valid Let's Encrypt certificate. Proxied, it loads through Cloudflare (`cf-ray` header present); `http://subbed.ca` and `https://www.subbed.ca/library` end at `https://subbed.ca/...`.
 - AC-4 (server): `/api/health` is ok; `docker compose ps` shows `subbed` healthy and `caddy` up.
-- AC-5 (server): From the Mac, port 8000 does not answer, and `ufw status` lists only 22, 80, 443. After the Cloud Firewall, `curl https://143.110.223.217` from the Mac gets no answer while the site still loads.
+- AC-5 (server): From the Mac, port 8000 does not answer, and `ufw status` lists only 22, 80, 443. After the Cloud Firewall, a request straight to the droplet's address gets no answer while the site still loads.
 - AC-6 (server): Sign up (or sign in, if the database was moved), search, open a song, save it. The server log shows the Mac's public IP, not a Cloudflare or Caddy address.
 - AC-7 (server): After `reboot`, the site comes back by itself.
 - AC-8 (server): Running the cron line by hand writes a backup file; `crontab -l` shows the nightly entry.
