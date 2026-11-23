@@ -178,7 +178,7 @@ function HomeFooter() {
           Gemini.
         </p>
         <p>
-          Built by Victor Velma. <a href={SOURCE_CODE_URL}>Source on GitHub</a>
+          Built by Victor Velma at Perspectif Inc. <a href={SOURCE_CODE_URL}>Source on GitHub</a>
         </p>
       </div>
       <p className="keyboard-hint">
