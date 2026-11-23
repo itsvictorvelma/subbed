@@ -75,7 +75,7 @@ function startRain(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D)
     canvas,
     context,
     still: prefersReducedMotion(),
-    // The page's font stack (it covers kana), inherited by the canvas from styles.css.
+    // The page's font stack (it covers kana), inherited by the canvas from the stylesheet.
     fontFamily: getComputedStyle(canvas).fontFamily || "sans-serif",
     colors: readRainColors(),
     fontPx: FONT_PX,

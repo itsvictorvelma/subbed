@@ -17,7 +17,7 @@ function systemTheme(): Theme {
   return matchesMedia("(prefers-color-scheme: light)") ? "light" : "dark";
 }
 
-// Sets the theme on <html>, where styles.css reads it; null leaves it to the system.
+// Sets the theme on <html>, where styles/tokens.css reads it; null leaves it to the system.
 function applyTheme(theme: Theme | null): void {
   if (theme === null) {
     delete document.documentElement.dataset.theme;

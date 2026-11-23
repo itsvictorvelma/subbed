@@ -14,7 +14,7 @@ interface PhoneTabsProps {
   onChange: (column: VersionColumn) => void;
 }
 
-// On a phone, which version shows next to the original. Hidden on wider screens by styles.css.
+// On a phone, which version shows next to the original. Hidden on wider screens by the stylesheet.
 export function PhoneTabs({ value, onChange }: PhoneTabsProps) {
   return (
     <div className="segmented phone-tabs" role="group" aria-label="Second column">

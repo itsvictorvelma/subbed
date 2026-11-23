@@ -235,7 +235,7 @@ subbed/
 │   │   ├── errors.py           Error codes, their HTTP status, and their message
 │   │   ├── song.py             Open a song: LRCLIB id → every line in four versions
 │   │   ├── library.py          The shared song cache and each person's saved songs
-│   │   ├── database.py         The SQLite file and its tables
+│   │   ├── database.py         The SQLite file: one-time setup, WAL mode, tables
 │   │   ├── rate_limits.py      Daily caps on new songs, sign-ups, and failed sign-ins
 │   │   ├── accounts/           Passwords (scrypt), users, session cookies, account routes
 │   │   ├── lyrics/             LRCLIB client, search ranking, lines and timings, Japanese detection
@@ -247,21 +247,21 @@ subbed/
 │   ├── public/               Favicon, phone icon, link preview image
 │   └── src/
 │       ├── main.tsx            Mounts the app
-│       ├── App.tsx             The shell: header, page switch, search and open flow
+│       ├── App.tsx             The shell: header and page switch (state lives in hooks)
 │       ├── api.ts              Every server call, reply checks, and error wording
 │       ├── types.ts            Shared data shapes
 │       ├── routing.ts          Addresses: /, /library, /song/{id}, /account
 │       ├── browser.ts          Media queries and remembered settings
 │       ├── icons.tsx           Every icon
-│       ├── styles.css          Design tokens (dark and light), layout, motion, phone layout
-│       ├── account/            Sign in, create, sign out, delete; who is signed in
+│       ├── styles/             Tokens, base, one file per page, phone layout, motion (in order)
+│       ├── account/            Sign in, create, sign out, delete; useAccountState
 │       ├── header/             The top bar and the theme switch
 │       ├── search/             Search box, loading screen, kana rain
 │       ├── shortcuts/          Keyboard shortcuts and their list
 │       ├── home/               Home page and the animated example line
-│       ├── library/            Your songs: tiles, sorting, filter, Undo
-│       ├── song/               The song page: four-column table, study tools, following
-│       └── player/             Player bar, YouTube and audio-file players, playback rules
+│       ├── library/            Your songs: tiles, sorting, filter, Undo; useLibrary
+│       ├── song/               The song page: table, study tools, following; useSongOpener
+│       └── player/             Player bar, YouTube and file players, phone sheet, settings
 ├── specs/                    One short spec per feature, from idea to done
 ├── docs/                     README media (invented songs only)
 ├── scripts/                  check.sh, check-quiet.sh; deploy.sh and backup.sh (run on the server)

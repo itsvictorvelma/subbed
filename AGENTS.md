@@ -29,7 +29,7 @@ The previous version of this app is preserved at git tag `archive/cursor-v1`. It
 - **Layout.** Columns side by side, one row per lyric line.
 - **Hosting is planned.** The app will be hosted on a server for the user, family, and friends, with personal accounts (a later spec). Spec 020 makes it ready (Docker, Caddy, settings from the environment); locally it still runs on `127.0.0.1`. The user handles the server and domain.
 - **Roadmap:** done so far: the core, saved songs (library), synced playback (YouTube embed and optional MP3, with LRCLIB timings), the design pass, study tools, and personal accounts (spec 014). Next: a few more features, then deployment with Docker and Caddy (spec 020).
-- **Design.** The design pass (spec 013) set the look: the colour tokens and patterns in `frontend/src/styles.css`. New UI reuses them; anything new to the look is proposed and approved first.
+- **Design.** The design pass (spec 013) set the look: the colour tokens in `frontend/src/styles/tokens.css` and the patterns in the other files of `frontend/src/styles/`. New UI reuses them; anything new to the look is proposed and approved first.
 - **Stack.** Python server in `backend/` (FastAPI, uvicorn, uv, pytest), React page in `frontend/` (Vite, TypeScript, Vitest with jsdom and Testing Library). `scripts/check.sh` runs every check.
 - **Never push to `main`.** Every change is a PR the user reviews and merges.
 

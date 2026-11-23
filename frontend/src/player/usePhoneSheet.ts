@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { matchesMedia } from "../browser";
 
-// The width below which styles.css uses the phone layout.
+// The width below which styles/phone.css applies.
 export const PHONE_QUERY = "(max-width: 719px)";
 
 export function isPhone(): boolean {
