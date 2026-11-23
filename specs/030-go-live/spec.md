@@ -1,6 +1,6 @@
 # 030 — Go live on subbed.ca
 
-Status: approved
+Status: done
 
 <!-- Written 2026-11-22. Builds on spec 020 (Docker and Caddy) and 028 (the Subbed name). -->
 

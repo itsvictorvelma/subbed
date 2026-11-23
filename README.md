@@ -2,6 +2,8 @@
 
 <p align="center"><strong>Read any Japanese song, line by line.</strong></p>
 
+<p align="center"><a href="https://subbed.ca"><strong>Try it at subbed.ca →</strong></a></p>
+
 <p align="center">
   Type a song's name. Subbed shows every line four ways: the original, hiragana, romaji, and English.<br>
   Then play along with the video while the sung line lights up.
@@ -72,7 +74,7 @@
 | **Backend** | Python 3.12+, FastAPI, uvicorn, SQLite, managed with [uv](https://docs.astral.sh/uv/) |
 | **Frontend** | React 19, TypeScript, Vite. No UI library: hand-written CSS with design tokens |
 | **Quality** | ruff, mypy `--strict`, pytest · Prettier, ESLint (strict, type-checked), `tsc`, Vitest + Testing Library |
-| **Hosting** | Docker Compose on one small server, with [Caddy](https://caddyserver.com) for HTTPS |
+| **Hosting** | Docker Compose on one small server: [Caddy](https://caddyserver.com) for HTTPS, behind [Cloudflare](https://www.cloudflare.com) |
 | **Services** | LRCLIB (lyrics), Groq and Gemini free tiers (readings and translation). No paid APIs. |
 
 ## Getting started
@@ -125,7 +127,7 @@ It asks for the new password twice and signs that person out everywhere.
 
 ## Deploy
 
-Subbed runs on one small server (for example a DigitalOcean droplet) with Docker. Caddy sits in front, gets the HTTPS certificate, and is the only part reachable from the internet. The app container serves both the page and the API, and keeps the database on a Docker volume.
+Subbed runs on one small server (for example a DigitalOcean droplet) with Docker, behind Cloudflare's proxy. Caddy gets the HTTPS certificate and is the only part of the server reachable from the internet. The app container serves both the page and the API, and keeps the database on a Docker volume.
 
 **1. The server.** Ubuntu 24.04 with at least 1 GB of memory. On 1 GB, add swap so the page build does not run out of memory:
 
@@ -262,10 +264,10 @@ subbed/
 │       └── player/             Player bar, YouTube and audio-file players, playback rules
 ├── specs/                    One short spec per feature, from idea to done
 ├── docs/                     README media (invented songs only)
-├── scripts/                  check.sh, check-quiet.sh, and deploy.sh (run on the server)
+├── scripts/                  check.sh, check-quiet.sh; deploy.sh and backup.sh (run on the server)
 ├── Dockerfile                The image: builds the page, then runs the server
 ├── compose.yaml              The server setup: Caddy in front of the app
-├── Caddyfile                 HTTPS and security headers
+├── Caddyfile                 HTTPS, the www redirect, Cloudflare's addresses, security headers
 └── AGENTS.md                 The rules every contributor (human or agent) follows
 ```
 

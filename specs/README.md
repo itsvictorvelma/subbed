@@ -42,7 +42,7 @@ Numbers are permanent ids, never reused, because commits and PRs refer to them. 
 | 020 | Deployment: Docker and Caddy on a server, settings from the environment | done |
 | 028 | Rename to Subbed: new name, 字幕 mark, icons, settings, package | done |
 | 029 | Phone polish: mini player and sheet, one-row header, roomier lyrics, iPhone fixes | done |
-| 030 | Go live on subbed.ca: server setup, Cloudflare proxy, www redirect, nightly backups | approved |
+| 030 | Go live on subbed.ca: server setup, Cloudflare proxy, www redirect, nightly backups | done |
 | — | Next language | decided after 008 is in use |
 
 ## Ideas carried from the shelved specs
