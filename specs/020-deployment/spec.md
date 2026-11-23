@@ -1,6 +1,6 @@
 # 020 — Deployment: Docker and Caddy on a server
 
-Status: approved
+Status: done
 
 <!-- Agreed in principle on 2026-11-20, refreshed after 027 on 2026-11-20. Builds on spec 014.
 The user sets up the droplet and domain; this spec makes the app ready so going live is a few

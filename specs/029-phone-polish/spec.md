@@ -1,6 +1,6 @@
 # 029 — Phone polish: mini player, roomier lyrics, iPhone fixes
 
-Status: approved
+Status: done
 
 ## Goal
 
