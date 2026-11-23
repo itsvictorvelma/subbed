@@ -27,8 +27,8 @@ The previous version of this app is preserved at git tag `archive/cursor-v1`. It
   - Every version except the original (hiragana, romaji, English) comes from a free-tier AI translator, checked against a schema: Groq first, Gemini as the backup when Groq is busy (decided 2026-11-18, spec 010). No local reading dictionaries (decided 2026-11-17: less code, and new languages need only a new prompt).
 - **Lyrics source.** LRCLIB only. Pasting lyrics was removed (decided 2026-11-18). Scraping other lyrics sites is out for now (terms of use, fragile pages, SSRF risk). Revisit only if LRCLIB misses often.
 - **Layout.** Columns side by side, one row per lyric line.
-- **Hosting is planned.** The app will be hosted on a server for the user, family, and friends, with personal accounts (a later spec). Spec 020 makes it ready (Docker, Caddy, settings from the environment); locally it still runs on `127.0.0.1`. The user handles the server and domain.
-- **Roadmap:** done so far: the core, saved songs (library), synced playback (YouTube embed and optional MP3, with LRCLIB timings), the design pass, study tools, and personal accounts (spec 014). Next: a few more features, then deployment with Docker and Caddy (spec 020).
+- **Hosting.** Live at https://subbed.ca for the user, family, and friends (specs 020 and 030): one small server with Docker and Caddy, behind Cloudflare's proxy. Locally it still runs on `127.0.0.1`. The user handles the server, the domain, and Cloudflare.
+- **Roadmap:** done so far: the core, saved songs (library), synced playback (YouTube embed and optional MP3, with LRCLIB timings), the design pass, study tools, personal accounts (spec 014), the Subbed name (028), the phone redesign (029), and going live (020, 030). Next: groundwork for more languages, then Korean.
 - **Design.** The design pass (spec 013) set the look: the colour tokens and patterns in `frontend/src/styles.css`. New UI reuses them; anything new to the look is proposed and approved first.
 - **Stack.** Python server in `backend/` (FastAPI, uvicorn, uv, pytest), React page in `frontend/` (Vite, TypeScript, Vitest with jsdom and Testing Library). `scripts/check.sh` runs every check.
 - **Never push to `main`.** Every change is a PR the user reviews and merges.
@@ -58,6 +58,7 @@ Limits:
 ### Secrets
 - API keys (Groq, Gemini) live only in the environment or a gitignored `.env`. Never hardcode, commit, log, print, or send them to the browser.
 - Never weaken `.gitignore` for `.env*`, `*.mp3`, databases, or `.claude/settings.local.json`.
+- The repo is public. Never write server details (addresses, SSH or account setup, what is installed, deploy status) into code, specs, commits, or PR text.
 
 ### Untrusted input
 - Typed song names, LRCLIB replies, saved rows, and model output are all untrusted.
