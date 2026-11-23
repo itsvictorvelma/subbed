@@ -13,7 +13,7 @@ Subbed is live at `https://subbed.ca` on the user's droplet, behind Cloudflare's
 
 - Droplet `143.110.223.217`: Ubuntu 24.04, 1 vCPU, 2 GB memory, 48 GB disk, no swap, no Docker, firewall off.
 - SSH: key only (password login already off), root login with the key. Automatic security updates already on.
-- DNS: `subbed.ca` is on Cloudflare; no `A` record yet.
+- DNS: `subbed.ca` is on Cloudflare; `A` records for `subbed.ca` and `www` → the droplet, DNS only (added by the user the same day).
 - Repo: `github.com/itsvictorvelma/subbed` (public), so the server clones over HTTPS with no key.
 
 ## In scope
@@ -67,12 +67,12 @@ Cloudflare and the firewall (in this order)
 - `www` and plain HTTP both end at `https://subbed.ca`, with HSTS (spec 020).
 - Backups hold password hashes and session hashes; they stay in `/root/backups` (root only, `chmod 700`).
 
-## Decisions for the user (before go)
+## Decisions (answered 2026-11-22)
 
-- D-1: Move the local database (your account, saved songs, and the cached songs, which save translator quota) or start empty? Proposed: move it.
-- D-2: Redirect `www.subbed.ca`? Proposed: yes.
-- (Decided 2026-11-22: Cloudflare proxied, orange cloud.)
-- D-3: Switch on DigitalOcean's paid weekly backups as well? Proposed: your call; the nightly copies cover a broken update, not a lost droplet.
+- D-1: The local database moves to the server (the account, saved songs, and cached songs).
+- D-2: `www.subbed.ca` sends visitors on to `subbed.ca`.
+- D-3: No paid extras: no DigitalOcean backups. The nightly copies on the droplet are the backup; the README says how to copy one to the Mac now and then.
+- Cloudflare proxied (orange cloud). The `A` records for `subbed.ca` and `www` exist, DNS only, pointing to the droplet (checked).
 
 ## Acceptance checks
 
