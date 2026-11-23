@@ -1,7 +1,7 @@
 // A song: its header row (or the Focus strip), the lyrics rows, the player bar fixed below, and the study tools.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { goBack } from "../routing";
-import { HideColumnToggles, PhoneTabs } from "./ColumnButtons";
+import { HideColumnToggles, PhoneHideButton, PhoneTabs } from "./ColumnButtons";
 import { OtherMatches } from "./OtherMatches";
 import { useFollowLine } from "./followLine";
 import { useHiddenColumns } from "./hiddenColumns";
@@ -267,7 +267,14 @@ export function SongPage(props: SongPageProps) {
             </p>
           </div>
           <HideColumnToggles hidden={hidden} onToggle={toggleColumn} />
-          <PhoneTabs value={phoneColumn} onChange={setPhoneColumn} />
+          <div className="phone-only phone-columns">
+            <PhoneTabs value={phoneColumn} onChange={setPhoneColumn} />
+            <PhoneHideButton
+              column={phoneColumn}
+              hidden={hidden}
+              onToggle={toggleColumn}
+            />
+          </div>
           <SaveButton
             songId={song.id}
             saved={saved}
@@ -344,6 +351,7 @@ export function SongPage(props: SongPageProps) {
         offsetMs={offsetMs}
         hasTimings={timed}
         progress={progress}
+        currentLineText={sungText(lines, currentLine)}
         onOffsetChange={setOffsetMs}
         onVideoChange={setVideoId}
         onClock={handleClock}
@@ -374,6 +382,12 @@ export function SongPage(props: SongPageProps) {
       )}
     </section>
   );
+}
+
+// The original text of the sung line, or null when none is sung or the line is blank (a gap).
+function sungText(lines: Line[], currentLine: number | null): string | null {
+  const text = lines.find((line) => line.index === currentLine)?.original;
+  return text === undefined || text === "" ? null : text;
 }
 
 function readClock(player: AudioClock | null): Progress {

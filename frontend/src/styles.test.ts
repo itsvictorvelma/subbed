@@ -180,3 +180,68 @@ test("AC-11: below 720px only the chosen column shows next to the original", () 
     );
   }
 });
+
+// The phone block's text, from its opening line to its matching closing brace.
+function phoneBlock(): { start: number; end: number; text: string } {
+  const start = css.indexOf("@media (max-width: 719px) {");
+  let depth = 0;
+  for (let at = css.indexOf("{", start); at < css.length; at++) {
+    if (css[at] === "{") depth++;
+    if (css[at] === "}" && --depth === 0) {
+      return { start, end: at + 1, text: css.slice(start, at + 1) };
+    }
+  }
+  throw new Error("the phone block never closes");
+}
+
+// Every component's source, to find the classes worn next to phone-only.
+const SOURCES = import.meta.glob<string>("./**/*.tsx", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+
+test("spec 029 AC-6: phone-only elements are hidden everywhere outside the phone block", () => {
+  const phone = phoneBlock();
+  const outside = css.slice(0, phone.start) + css.slice(phone.end);
+  // Outside the phone block, only the hiding rule names phone-only, and it is the last rule.
+  expect(outside.match(/\.phone-only/g)).toHaveLength(1);
+  expect(css.trimEnd().endsWith(".phone-only {\n  display: none;\n}")).toBe(
+    true,
+  );
+
+  // Every phone-only element is marked in a plain className string, so its classes can be read.
+  const partners = new Set<string>();
+  for (const source of Object.values(SOURCES)) {
+    const literals = [
+      ...source.matchAll(/className="([^"]*\bphone-only\b[^"]*)"/g),
+    ];
+    expect(source.split("phone-only").length - 1).toBe(literals.length);
+    for (const match of literals) {
+      for (const name of (match[1] ?? "").split(" ")) {
+        if (name !== "phone-only") partners.add(name);
+      }
+    }
+  }
+  expect(partners.size).toBeGreaterThan(5);
+
+  // Outside the phone block, a rule that sets display on a class worn next to phone-only may only be
+  // that one plain class (which the later hiding rule beats); anything more specific would win.
+  for (const rule of outside.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (!/(^|[\s;])display:/.test(rule[2] ?? "")) continue;
+    for (const selector of (rule[1] ?? "").split(",")) {
+      const plain = selector.replace(/\/\*[\s\S]*?\*\//g, "").trim();
+      for (const name of partners) {
+        if (new RegExp(`\\.${name}(?![\\w-])`).test(plain)) {
+          expect(plain, `"${plain}" sets display on .${name}`).toBe(`.${name}`);
+        }
+      }
+    }
+  }
+});
+
+test("spec 029 AC-7: on a phone, text boxes are 16 px so Safari does not zoom in", () => {
+  expect(phoneBlock().text).toMatch(
+    /\.search-box input,\s*\.library-filter input,\s*\.account-form input \{\s*font-size: 1rem;/,
+  );
+});

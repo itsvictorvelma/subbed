@@ -45,7 +45,7 @@ export function HomePage(props: HomePageProps) {
         <HeroLine />
         {/* Home is never shown mid-search: the loading steps replace it. */}
         <SearchForm busy={false} onSearch={props.onSearch} size="large" />
-        <p className="home-hint">
+        <p className="home-hint keyboard-hint">
           Press <kbd>/</kbd> to search, <kbd>?</kbd> for all keyboard shortcuts
         </p>
         {guest && (
@@ -192,7 +192,7 @@ function HomeFooter() {
           Built by Victor Velma. <a href={SOURCE_CODE_URL}>Source on GitHub</a>
         </p>
       </div>
-      <p>
+      <p className="keyboard-hint">
         Press <kbd>?</kbd> for keyboard shortcuts
       </p>
     </footer>
