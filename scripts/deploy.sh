@@ -19,12 +19,20 @@ main() {
     exit 1
   fi
 
+  # Caddy reads its config once, from a file `git pull` replaces: restart it when it changed.
+  local caddyfile_before
+  caddyfile_before="$(git rev-parse HEAD:Caddyfile)"
   git pull --ff-only
   # Caddy waits for the app to be healthy, so a failed start shows here.
   docker compose up -d --build || {
     echo "Subbed did not start. See: docker compose logs subbed"
     exit 1
   }
+
+  if [[ "$(git rev-parse HEAD:Caddyfile)" != "$caddyfile_before" ]]; then
+    echo "The Caddyfile changed; restarting Caddy."
+    docker compose restart caddy
+  fi
 
   container="$(docker compose ps -q subbed)"
   for _ in $(seq 1 30); do
