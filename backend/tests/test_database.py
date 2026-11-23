@@ -1,15 +1,17 @@
-"""Tests for the database file: its path, its folder, and the upgrade of an older file."""
+"""Tests for the database file: its path, its folder, its one-time setup, WAL, and the upgrade of
+an older file."""
 
 import sqlite3
 from contextlib import closing
 from pathlib import Path
 
+import pytest
 from conftest import REAL_DATABASE_PATH, sign_up
 from error_shape import assert_error_shape
 from fake_lrclib import FakeLrclib, json_reply, record
 from fastapi.testclient import TestClient
 
-from subbed import config
+from subbed import config, database
 from subbed.app import SAVED_SONGS_PATH, SONG_SEARCH_PATH, SONG_VERSIONS_PATH
 from subbed.database import connect
 
@@ -121,3 +123,70 @@ def test_an_unreadable_file_still_lets_a_guest_search_but_no_new_song_starts(
     assert opened.status_code == 500
     assert_error_shape(opened.json(), "internal_error")
     assert len(fake_lrclib.requests) == 1
+
+
+def test_spec032_ac1_setup_runs_once_per_file_not_once_per_connection(
+    temporary_database: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    statements: list[str] = []
+    real_open = database.open_connection
+
+    def traced_open(path: Path) -> sqlite3.Connection:
+        connection = real_open(path)
+        connection.set_trace_callback(statements.append)
+        return connection
+
+    monkeypatch.setattr(database, "open_connection", traced_open)
+
+    for _ in range(5):
+        with connect() as connection:
+            connection.execute("SELECT 1")
+
+    creates = [s for s in statements if s.lstrip().upper().startswith("CREATE TABLE")]
+    upgrade_checks = [s for s in statements if "saved_songs" in s]
+    assert len(creates) == len(database.CREATE_TABLES)
+    assert len(upgrade_checks) == 1
+
+
+def test_spec032_ac2_the_file_is_in_wal_mode(temporary_database: Path) -> None:
+    with connect():
+        pass
+
+    with closing(sqlite3.connect(temporary_database)) as connection:
+        assert connection.execute("PRAGMA journal_mode").fetchone()[0] == "wal"
+
+
+def test_spec032_ac3_every_connection_waits_for_locks_and_syncs_normally() -> None:
+    normal = 1
+    for _ in range(2):
+        with connect() as connection:
+            assert connection.execute("PRAGMA busy_timeout").fetchone()[0] == 5000
+            assert connection.execute("PRAGMA synchronous").fetchone()[0] == normal
+
+
+def test_spec032_ac4_a_write_in_progress_does_not_block_a_read() -> None:
+    with connect() as connection:
+        connection.execute(
+            "INSERT INTO users (username, password_hash, created_at) VALUES ('a', 'h', 1.0)"
+        )
+
+    with connect() as writer:
+        writer.execute("BEGIN IMMEDIATE")
+        writer.execute("UPDATE users SET username = 'b'")
+        with connect() as reader:
+            reader.execute("PRAGMA busy_timeout = 0")
+            assert reader.execute("SELECT username FROM users").fetchone()[0] == "a"
+
+
+def test_spec032_a_failed_setup_is_tried_again_on_the_next_connection(
+    temporary_database: Path,
+) -> None:
+    temporary_database.parent.mkdir(parents=True)
+    temporary_database.write_bytes(b"this is not a database file" * 100)
+    with pytest.raises(sqlite3.DatabaseError), connect():
+        pass
+
+    temporary_database.unlink()
+
+    with connect() as connection:
+        assert connection.execute("SELECT count(*) FROM users").fetchone()[0] == 0

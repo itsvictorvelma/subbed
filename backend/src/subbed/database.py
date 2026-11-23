@@ -1,8 +1,11 @@
-"""The one SQLite file: its connection, every table, and the upgrade of an older file."""
+"""The one SQLite file: its connections, its one-time setup, every table, and the upgrade of an
+older file."""
 
 import sqlite3
+import threading
 from collections.abc import Iterator
 from contextlib import closing, contextmanager
+from pathlib import Path
 
 from subbed import config
 
@@ -58,18 +61,52 @@ OLD_ADDED_COLUMNS = {
 }
 
 
+# How long a connection waits for another's lock before it gives up.
+BUSY_TIMEOUT_SECONDS = 5.0
+
+# The files already set up by this process, so setup runs once per file, not once per request.
+ready_files: set[Path] = set()
+setup_lock = threading.Lock()
+
+
 @contextmanager
 def connect() -> Iterator[sqlite3.Connection]:
-    """A connection to the file at `config.DATABASE_PATH`, created with its folder if missing.
+    """A connection to the file at `config.DATABASE_PATH`, set up the first time it is used.
 
     The `with` block is one transaction: committed when it ends, rolled back on an error.
     """
-    config.DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with closing(sqlite3.connect(config.DATABASE_PATH)) as connection, connection:
-        for statement in CREATE_TABLES:
-            connection.execute(statement)
-        upgrade_saved_songs(connection)
+    path = config.DATABASE_PATH
+    if path not in ready_files:
+        set_up(path)
+    with closing(open_connection(path)) as connection, connection:
         yield connection
+
+
+def open_connection(path: Path) -> sqlite3.Connection:
+    """A connection that waits for locks, and syncs to disk at checkpoints rather than on
+    every commit (safe in WAL mode: a crash can lose the last commits, never corrupt the file)."""
+    connection = sqlite3.connect(path, timeout=BUSY_TIMEOUT_SECONDS)
+    connection.execute("PRAGMA synchronous = NORMAL")
+    return connection
+
+
+def set_up(path: Path) -> None:
+    """Creates the folder and the tables, upgrades an older file, and turns on WAL, once.
+
+    WAL (write-ahead log) lets readers keep reading while one request writes. The mode is stored
+    in the file, so it stays on. A failure is not remembered, so the next request tries again.
+    """
+    with setup_lock:
+        if path in ready_files:
+            return
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with closing(open_connection(path)) as connection:
+            connection.execute("PRAGMA journal_mode = WAL")
+            with connection:
+                for statement in CREATE_TABLES:
+                    connection.execute(statement)
+                upgrade_saved_songs(connection)
+        ready_files.add(path)
 
 
 def upgrade_saved_songs(connection: sqlite3.Connection) -> None:
