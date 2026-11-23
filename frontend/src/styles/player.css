@@ -1,0 +1,154 @@
+/* Player bar */
+
+.player-bar {
+  position: relative;
+  /* Equal room on both sides for the pinned shortcuts button, so the row stays centered. */
+  padding: 0.75rem max(4rem, env(safe-area-inset-right)) calc(0.75rem + env(safe-area-inset-bottom))
+    max(4rem, env(safe-area-inset-left));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+
+.player-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 1.25rem;
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+.transport,
+.sync {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* No audio yet: one row of Find on YouTube, the link box, and Play a file, as tall as the player. */
+.audio-chooser {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* The file input is hidden, so its pill shows the keyboard focus. */
+.file-button:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Pinned to the bar's right edge, out of the centered row, so it never wraps under the controls. */
+.shortcuts-button {
+  position: absolute;
+  top: 50%;
+  right: max(1.25rem, env(safe-area-inset-right));
+  transform: translateY(-50%);
+}
+
+.sync {
+  font-size: 0.8125rem;
+}
+
+.sync span {
+  min-width: 7rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.position {
+  display: flex;
+  flex: 1 1 16rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.position input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.volume input {
+  width: 6rem;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.speed-button {
+  min-width: 3.5rem;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.link-form {
+  flex: 0 1 26rem;
+  height: 2.5rem;
+}
+
+.link-form .find-button {
+  height: 2rem;
+}
+
+.player-bar > .error {
+  max-width: 78rem;
+  margin: 0 auto 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* The video plays in a small window above the bar, at the right. */
+.video-window {
+  position: absolute;
+  right: max(2rem, env(safe-area-inset-right));
+  bottom: calc(100% + 1rem);
+  width: 17rem;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  animation: fade-up 0.25s ease both;
+}
+
+/* Hidden off-screen at a playable size, not removed, so the video keeps playing. */
+.video-window.is-hidden {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+}
+
+.video-frame {
+  width: 100%;
+  height: 100%;
+}
+
+.video-close {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  color: var(--text);
+  background: var(--surface);
+}
+
+/* The phone column tabs show only on narrow screens. */
+.phone-tabs {
+  display: none;
+}

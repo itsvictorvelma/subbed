@@ -1,0 +1,5 @@
+/* Phone-only elements (spec 029): hidden here, after every base rule; the phone block shows each one
+   with a more specific selector that pairs its own class with this one. */
+.phone-only {
+  display: none;
+}

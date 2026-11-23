@@ -1,6 +1,16 @@
-// Checks rules in styles.css that jsdom cannot compute, by reading the stylesheet as text.
+// Checks rules in the stylesheet that jsdom cannot compute, by reading it as text: every partial,
+// in the order styles/index.css imports them.
 import { expect, test } from "vitest";
-import css from "./styles.css?raw";
+import index from "./styles/index.css?raw";
+
+const partials: Record<string, string> = import.meta.glob("./styles/*.css", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const css = [...index.matchAll(/@import "\.\/(.+?)";/g)]
+  .map((match) => partials[`./styles/${match[1] ?? ""}`] ?? "")
+  .join("\n");
 
 const TEXT_PAIRS: [text: string, background: string][] = [
   ["--text", "--bg"],
@@ -20,7 +30,7 @@ const TEXT_PAIRS: [text: string, background: string][] = [
 function tokens(opening: string): Map<string, string> {
   const start = css.indexOf(opening);
   if (start === -1) {
-    throw new Error(`styles.css has no "${opening}" block`);
+    throw new Error(`the stylesheet has no "${opening}" block`);
   }
   const block = css.slice(start, css.indexOf("}", start));
   const found = new Map<string, string>();

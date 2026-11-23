@@ -1,0 +1,15 @@
+/* Subbed styles: night-player tokens, the pages, the phone layout, and motion.
+   The order matters: later files override earlier ones (the phone layout overrides the pages, and
+   account and the phone-only rules must come after it). */
+@import "./tokens.css";
+@import "./base.css";
+@import "./header.css";
+@import "./library.css";
+@import "./home.css";
+@import "./waiting.css";
+@import "./song.css";
+@import "./player.css";
+@import "./phone.css";
+@import "./motion.css";
+@import "./account.css";
+@import "./phone-only.css";

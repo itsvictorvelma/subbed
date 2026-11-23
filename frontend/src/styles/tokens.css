@@ -1,0 +1,77 @@
+/* Colour, type, and spacing tokens: light first, then dark (system setting or the theme button). */
+/* Light tokens; dark ones follow, chosen by the system or by the theme button (data-theme). */
+:root {
+  --bg: #faf8fa;
+  --surface: #ffffff;
+  --surface-2: #f1edf2;
+  --line: #e4dfe6;
+  --text: #1b1820;
+  --dim: #6a6575;
+  --accent: #c92a74;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(201 42 116 / 8%);
+  --accent-glow: rgb(201 42 116 / 22%);
+  --error: #a40000;
+  --shadow: 0 12px 32px rgb(27 24 32 / 12%);
+  --tile-bg-sl: 55% 92%;
+  --tile-fg-sl: 50% 32%;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e0d12;
+    --surface: #18161d;
+    --surface-2: #24212b;
+    --line: #2a2731;
+    --text: #f3f0f5;
+    --dim: #9c97a8;
+    --accent: #ff7ab6;
+    --accent-ink: #1a0a12;
+    --accent-soft: rgb(255 122 182 / 12%);
+    --accent-glow: rgb(255 122 182 / 35%);
+    --error: #ff8a80;
+    --shadow: 0 12px 32px rgb(0 0 0 / 50%);
+    --tile-bg-sl: 30% 18%;
+    --tile-fg-sl: 85% 80%;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0e0d12;
+  --surface: #18161d;
+  --surface-2: #24212b;
+  --line: #2a2731;
+  --text: #f3f0f5;
+  --dim: #9c97a8;
+  --accent: #ff7ab6;
+  --accent-ink: #1a0a12;
+  --accent-soft: rgb(255 122 182 / 12%);
+  --accent-glow: rgb(255 122 182 / 35%);
+  --error: #ff8a80;
+  --shadow: 0 12px 32px rgb(0 0 0 / 50%);
+  --tile-bg-sl: 30% 18%;
+  --tile-fg-sl: 85% 80%;
+
+  color-scheme: dark;
+}
+
+:root {
+  color: var(--text);
+  background: var(--bg);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic UI",
+    "Yu Gothic",
+    "Meiryo",
+    "Noto Sans JP",
+    sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
