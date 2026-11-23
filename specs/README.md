@@ -43,6 +43,7 @@ Numbers are permanent ids, never reused, because commits and PRs refer to them. 
 | 028 | Rename to Subbed: new name, 字幕 mark, icons, settings, package | done |
 | 029 | Phone polish: mini player and sheet, one-row header, roomier lyrics, iPhone fixes | done |
 | 030 | Go live on subbed.ca: server setup, Cloudflare proxy, www redirect, nightly backups | done |
+| 031 | Dev server with `uv run fastapi dev` (a small change merged without a spec file) | done |
 | — | Next language | decided after 008 is in use |
 
 ## Ideas carried from the shelved specs
