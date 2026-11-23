@@ -1,6 +1,6 @@
 # 028 — Rename Lyrx to Subbed
 
-Status: approved
+Status: done
 
 ## Goal
 
