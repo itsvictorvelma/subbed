@@ -87,4 +87,7 @@ Cloudflare and the firewall (in this order)
 
 ## Plan
 
-Added after approval.
+- `Caddyfile`: a global `servers` block with `trusted_proxies static` (Cloudflare's ranges) and `client_ip_headers CF-Connecting-IP`; a `www.{$SUBBED_DOMAIN}` site with `redir ... permanent`; `header_up X-Forwarded-For {client_ip}` on the proxy.
+- `scripts/backup.sh` (new) and `backend/tests/test_backup_script.py` (AC-1, fake `docker` on PATH, backup folder from `SUBBED_BACKUP_DIR`).
+- README Deploy section; `specs/README.md`.
+- Server work does not wait for the PR where it does not need it: steps 1 to 9 run from `main` (spec 020 already there) on grey DNS; after the PR is merged, `deploy.sh` picks up the new Caddyfile, then cron, then the proxy and the Cloud Firewall.

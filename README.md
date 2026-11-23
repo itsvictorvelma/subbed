@@ -133,10 +133,10 @@ Subbed runs on one small server (for example a DigitalOcean droplet) with Docker
 fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
 echo '/swapfile none swap sw 0 0' >> /etc/fstab
 curl -fsSL https://get.docker.com | sh                 # Docker and Compose
-ufw allow OpenSSH && ufw allow 80 && ufw allow 443 && ufw enable
+ufw allow OpenSSH && ufw allow 80/tcp && ufw allow 443/tcp && ufw allow 443/udp && ufw enable
 ```
 
-**2. The domain.** Add an `A` record for your domain pointing to the server's IPv4 address. Add no `AAAA` record: Docker's network is IPv4 only, so every IPv6 visitor would share one address for the daily caps. Wait until `dig +short your.domain` shows that IP. Caddy can only get the certificate after this.
+**2. The domain** (Cloudflare). Add `A` records for `your.domain` and `www`, both pointing to the server's IPv4 address, and no `AAAA` record. Set SSL/TLS to **Full (strict)**: Flexible loops with Caddy's redirect to HTTPS. Keep the records **DNS only** (grey cloud) until the first start shows a valid certificate, then switch both to **Proxied**. Caddy trusts only Cloudflare's addresses to name the visitor (`CF-Connecting-IP`), so the daily caps still count each guest; the list is in the [`Caddyfile`](Caddyfile), copied from [cloudflare.com/ips](https://www.cloudflare.com/ips/). Last, a DigitalOcean Cloud Firewall that lets 80 and 443 in only from those ranges stops anyone from skipping Cloudflare (`ufw` cannot: Docker's ports bypass it).
 
 **3. First start.** On the server:
 
@@ -164,12 +164,23 @@ docker compose logs -f subbed         # the app log (Caddy: logs -f caddy)
 docker compose exec subbed python -m subbed.accounts.reset_password <username>
 ```
 
-Back up the database (safe while it runs), then copy the file off the server:
+Back up the database: `scripts/backup.sh` makes a consistent copy while the app runs, into `/root/backups/subbed-YYYY-MM-DD.db`, and keeps the newest 14. Run it every night with cron, and copy one to your computer now and then:
 
 ```bash
-docker compose exec subbed python -c "import sqlite3; sqlite3.connect('/data/subbed.db').backup(sqlite3.connect('/data/backup.db'))"
-docker compose cp subbed:/data/backup.db ./subbed-backup-$(date +%F).db
-# from your computer: scp root@your.domain:subbed/subbed-backup-*.db .
+(crontab -l 2>/dev/null; echo '30 3 * * * /root/subbed/scripts/backup.sh >> /var/log/subbed-backup.log 2>&1') | crontab -
+# from your computer (`droplet` = your SSH alias for the server's IP; once proxied, the domain points to Cloudflare):
+scp 'droplet:/root/backups/subbed-*.db' .
+```
+
+Move a local database to the server (it replaces the server's): copy it safely on your computer, then swap it in while the app is stopped:
+
+```bash
+python3 -c "import sqlite3; sqlite3.connect('data/subbed.db').backup(sqlite3.connect('subbed-move.db'))"
+scp subbed-move.db droplet:/root/
+# on the server, in subbed/:
+docker compose stop subbed
+docker run --rm --user 0 -v subbed_subbed-data:/data -v /root/subbed-move.db:/in.db:ro --entrypoint sh subbed-subbed -c "cp /in.db /data/subbed.db && chown 10001 /data/subbed.db"
+docker compose start subbed
 ```
 
 Each update leaves the old image behind; free the disk now and then with `docker image prune` (it never touches volumes). `docker compose down` stops everything and keeps the data. Never add `-v`: it deletes the database and the certificates.
