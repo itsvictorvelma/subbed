@@ -94,6 +94,28 @@ test("AC-1: Your songs goes to the library and the wordmark back home", async ()
   expect(window.location.pathname).toBe("/");
 });
 
+test("spec 029 AC-4: on a phone the header's search icon opens and focuses the search box; the links keep their names", async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  // Home has its own large search box, so the header's search icon appears on other pages.
+  expect(screen.queryByRole("button", { name: "Search" })).toBeNull();
+
+  await user.click(screen.getByRole("link", { name: "Your songs" }));
+  const toggle = await screen.findByRole("button", { name: "Search" });
+  expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  await user.click(toggle);
+
+  expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  expect(document.querySelector(".site-header")?.className).toContain(
+    "is-searching",
+  );
+  expect(document.activeElement).toBe(
+    screen.getByRole("searchbox", { name: "Song name or artist" }),
+  );
+  expect(screen.getByRole("link", { name: "Your songs" })).toBeTruthy();
+  expect(screen.getByRole("link", { name: "mika" })).toBeTruthy();
+});
+
 test("spec 028 AC-2: the wordmark reads subbed 字幕, with the kanji marked as Japanese", () => {
   render(<App />);
 

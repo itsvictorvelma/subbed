@@ -1,4 +1,6 @@
-// The song head's column buttons: the phone's second-column tabs, and the Hide toggles for self-testing.
+// The song head's column buttons: the phone's second-column tabs and eye button, and the Hide
+// toggles for self-testing.
+import { EyeIcon } from "../icons";
 import type { VersionColumn } from "../types";
 
 const COLUMN_BUTTONS: { column: VersionColumn; label: string; lang: string }[] =
@@ -69,5 +71,34 @@ export function HideColumnToggles({
         ))}
       </div>
     </div>
+  );
+}
+
+interface PhoneHideButtonProps {
+  column: VersionColumn;
+  hidden: Set<VersionColumn>;
+  onToggle: (column: VersionColumn) => void;
+}
+
+// On a phone, one eye button covers or uncovers the column shown next to the original, using the
+// same hidden set as the Hide toggles.
+export function PhoneHideButton({
+  column,
+  hidden,
+  onToggle,
+}: PhoneHideButtonProps) {
+  const isHidden = hidden.has(column);
+  return (
+    <button
+      type="button"
+      className="icon-button phone-hide-button"
+      aria-label="Hide this column"
+      aria-pressed={isHidden}
+      onClick={() => {
+        onToggle(column);
+      }}
+    >
+      <EyeIcon crossed={isHidden} />
+    </button>
   );
 }

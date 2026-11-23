@@ -172,6 +172,34 @@ export function MusicIcon() {
   );
 }
 
+export function UserIcon() {
+  return (
+    <Icon>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" />
+    </Icon>
+  );
+}
+
+// An open eye, or a crossed-out one when the thing it controls is hidden.
+export function EyeIcon({ crossed }: { crossed: boolean }) {
+  return (
+    <Icon>
+      <path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z" />
+      <circle cx="12" cy="12" r="2.5" />
+      {crossed && <path d="M4 4l16 16" />}
+    </Icon>
+  );
+}
+
+export function ChevronUpIcon() {
+  return (
+    <Icon>
+      <path d="m6 15 6-6 6 6" />
+    </Icon>
+  );
+}
+
 export function KeyboardIcon() {
   return (
     <Icon>

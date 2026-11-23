@@ -1,6 +1,6 @@
 # 030 — Go live on subbed.ca
 
-Status: draft
+Status: approved
 
 <!-- Written 2026-11-22. Runs after spec 029 (phone polish) is merged and the user says go.
 Builds on spec 020 (Docker and Caddy) and 028 (the Subbed name). -->

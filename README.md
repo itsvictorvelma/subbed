@@ -90,8 +90,8 @@ cd frontend && npm install && cd ..
 # 2. Add your keys (the file is gitignored)
 cp .env.example .env        # then fill in GROQ_API_KEY and/or GEMINI_API_KEY
 
-# 3. Run the server (terminal 1), on 127.0.0.1:8000
-cd backend && uv run --env-file ../.env python -m subbed
+# 3. Run the server (terminal 1), on 127.0.0.1:8000; it reloads when you save
+cd backend && uv run fastapi dev
 
 # 4. Run the page (terminal 2)
 cd frontend && npm run dev  # open http://127.0.0.1:5173

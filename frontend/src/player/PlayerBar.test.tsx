@@ -11,8 +11,14 @@ import {
   songReply,
   VIDEO_ID,
 } from "../song/fakeSongPage";
-import { BAD_LINK_MESSAGE, PLAY_ALONG_TITLE } from "./PlayerBar";
+import {
+  BAD_LINK_MESSAGE,
+  CLOSE_SHEET_LABEL,
+  OPEN_SHEET_LABEL,
+  PLAY_ALONG_TITLE,
+} from "./PlayerBar";
 import { NO_TIMINGS_TEXT } from "../song/SongPage";
+import { SHORTCUT_LIST_TITLE } from "../shortcuts/ShortcutList";
 
 installFakeSongPage();
 
@@ -557,4 +563,156 @@ test("spec 026 AC-6: a song without timings shows no marker while its audio play
   await new Promise((resolve) => setTimeout(resolve, 400));
 
   expect(document.querySelectorAll(".sung-marker")).toHaveLength(0);
+});
+
+// One element of the phone player, found by its class; the test fails if it is missing.
+function part(selector: string): HTMLElement {
+  const element = document.querySelector<HTMLElement>(selector);
+  if (element === null) {
+    throw new Error(`no ${selector}`);
+  }
+  return element;
+}
+
+// The phone's slim bar: the chevron that opens the sheet (the line text opens it too).
+function sheetOpenButton(): HTMLElement {
+  return screen.getByRole("button", { name: OPEN_SHEET_LABEL });
+}
+
+test("spec 029 AC-1: the phone sheet opens from the bar and closes by its handle, the backdrop, and Esc, moving focus in and back", async () => {
+  const user = await openSavedSong(songReply(LINES, VIDEO_ID));
+  await waitFor(() => {
+    expect(fakePlayer.createdFor).toEqual([VIDEO_ID]);
+  });
+  expect(screen.queryByRole("dialog")).toBeNull();
+
+  await user.click(sheetOpenButton());
+  const sheet = screen.getByRole("dialog", { name: PLAY_ALONG_TITLE });
+  expect(document.activeElement).toBe(
+    within(sheet).getByRole("button", { name: CLOSE_SHEET_LABEL }),
+  );
+  await user.click(
+    within(sheet).getByRole("button", { name: CLOSE_SHEET_LABEL }),
+  );
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(document.activeElement).toBe(sheetOpenButton());
+
+  await user.click(part(".mini-line"));
+  expect(screen.getByRole("dialog")).toBeTruthy();
+  await user.click(part(".sheet-backdrop"));
+  expect(screen.queryByRole("dialog")).toBeNull();
+
+  await user.click(sheetOpenButton());
+  await user.keyboard("{Escape}");
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(document.activeElement).toBe(sheetOpenButton());
+});
+
+test("spec 029 AC-2: the slim bar is named by the sung line and shows the time", async () => {
+  fakePlayer.seconds = 5;
+  await openSavedSong(songReply(LINES, VIDEO_ID));
+  await waitFor(() => {
+    expect(document.querySelector(".mini-line-text")?.textContent).toBe(
+      "風が歌う",
+    );
+  });
+  expect(document.querySelector(".mini-line-time")?.textContent).toMatch(
+    /^0:05 \/ /,
+  );
+  expect(
+    screen
+      .getByRole("button", { name: /^風が歌う ?0:05/ })
+      .getAttribute("aria-haspopup"),
+  ).toBe("dialog");
+});
+
+test("spec 029 AC-1: Esc closes the sheet, not the keyboard shortcut list behind it", async () => {
+  const user = await openSavedSong(songReply(LINES, VIDEO_ID));
+  await waitFor(() => {
+    expect(fakePlayer.createdFor).toEqual([VIDEO_ID]);
+  });
+  await user.click(screen.getByRole("button", { name: "Keyboard shortcuts" }));
+  await user.click(sheetOpenButton());
+
+  await user.keyboard("{Escape}");
+  expect(screen.queryByRole("dialog", { name: PLAY_ALONG_TITLE })).toBeNull();
+  expect(
+    screen.getByRole("dialog", { name: SHORTCUT_LIST_TITLE }),
+  ).toBeTruthy();
+});
+
+test("spec 029 AC-1: Tab stays inside the open sheet", async () => {
+  const user = await openSavedSong(songReply(LINES, VIDEO_ID));
+  await waitFor(() => {
+    expect(fakePlayer.createdFor).toEqual([VIDEO_ID]);
+  });
+  await user.click(sheetOpenButton());
+  const sheet = screen.getByRole("dialog", { name: PLAY_ALONG_TITLE });
+  const handle = within(sheet).getByRole("button", { name: CLOSE_SHEET_LABEL });
+
+  await user.tab({ shift: true });
+  expect(sheet.contains(document.activeElement)).toBe(true);
+  expect(document.activeElement).not.toBe(handle);
+  await user.tab();
+  expect(document.activeElement).toBe(handle);
+});
+
+test("spec 029 AC-2: with no audio, Play along opens the sheet with the chooser", async () => {
+  const user = await openSavedSong(songReply(LINES));
+
+  await user.click(screen.getByRole("button", { name: "Play along" }));
+  const sheet = screen.getByRole("dialog", { name: PLAY_ALONG_TITLE });
+  expect(within(sheet).getByLabelText("YouTube link")).toBeTruthy();
+  expect(within(sheet).getByLabelText("Play a file")).toBeTruthy();
+});
+
+test("spec 029 AC-3: the sheet holds the slider, transport, loop, speed, mute, sync, video, and Change audio", async () => {
+  const user = await openSavedSong(songReply(LINES, VIDEO_ID));
+  await waitFor(() => {
+    expect(fakePlayer.createdFor).toEqual([VIDEO_ID]);
+  });
+  await user.click(sheetOpenButton());
+  const sheet = within(screen.getByRole("dialog"));
+
+  expect(sheet.getByLabelText("Position")).toBeTruthy();
+  for (const name of [
+    "Previous line",
+    "Play",
+    "Next line",
+    "Loop line",
+    "Mute",
+    "Show video",
+    "Earlier",
+    "Later",
+    "Change audio",
+  ]) {
+    expect(sheet.getByRole("button", { name })).toBeTruthy();
+  }
+  expect(sheet.getByRole("button", { name: /Playback speed/ })).toBeTruthy();
+  await user.click(sheet.getByRole("button", { name: "Later" }));
+  expect(putBodies()).toEqual([{ videoId: VIDEO_ID, offsetMs: 250 }]);
+});
+
+test("spec 029 AC-5: the eye button hides and shows the phone column, with the same state as the Hide toggles", async () => {
+  const user = await openSavedSong(songReply(LINES));
+  const eye = screen.getByRole("button", { name: "Hide this column" });
+  const hideKana = within(
+    screen.getByRole("group", { name: "Hide columns" }),
+  ).getByRole("button", { name: "かな" });
+
+  await user.click(eye);
+  expect(eye.getAttribute("aria-pressed")).toBe("true");
+  expect(hideKana.getAttribute("aria-pressed")).toBe("true");
+
+  await user.click(hideKana);
+  expect(eye.getAttribute("aria-pressed")).toBe("false");
+
+  const tabs = within(screen.getByRole("group", { name: "Second column" }));
+  await user.click(tabs.getByRole("button", { name: "Romaji" }));
+  await user.click(eye);
+  expect(
+    within(screen.getByRole("group", { name: "Hide columns" }))
+      .getByRole("button", { name: "Romaji" })
+      .getAttribute("aria-pressed"),
+  ).toBe("true");
 });
